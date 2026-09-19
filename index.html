@@ -166,6 +166,7 @@
   }
   .dice-sum{text-align:center; font-size:22px; font-weight:800; color:var(--green); padding:6px 0}
 
+  /* ---- CASES ---- */
   .case-tabs{display:flex; gap:6px}
   .case-tab{
     flex:1; padding:10px; border-radius:10px; background:var(--surface2);
@@ -183,6 +184,44 @@
   .case-name{font-size:24px; font-weight:800; margin:12px 0 6px; transition:color .15s}
   .case-rarity{font-size:12px; font-weight:700; letter-spacing:1px; transition:color .15s}
   .case-value{font-size:20px; font-weight:800; color:var(--gold); margin-top:8px}
+
+  /* Мульти-открытие */
+  .count-row{
+    display:flex; gap:6px; align-items:center;
+  }
+  .count-row label{
+    color:var(--text-dim); font-size:12px; font-weight:700; white-space:nowrap;
+  }
+  .count-btns{
+    display:flex; gap:4px; flex:1;
+  }
+  .count-btn{
+    flex:1; padding:9px 2px; background:var(--surface2); color:var(--text);
+    border:none; border-radius:8px; font-weight:700; cursor:pointer;
+    font-family:inherit; font-size:12px; min-width:0;
+  }
+  .count-btn.active{background:var(--gold-deep); color:#1A1400}
+
+  .total-price{
+    text-align:center; font-size:13px; font-weight:700;
+    color:var(--text-dim); padding:4px 0;
+  }
+  .total-price b{color:var(--gold)}
+
+  /* Список результатов мульти-открытия */
+  .results-list{
+    display:flex; flex-direction:column; gap:4px;
+    max-height:250px; overflow-y:auto; padding-right:4px;
+    margin-top:8px;
+  }
+  .results-list::-webkit-scrollbar{width:6px}
+  .results-list::-webkit-scrollbar-thumb{background:var(--surface3); border-radius:3px}
+  .result-item{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:8px 12px; border-radius:8px; font-weight:700; font-size:12px;
+  }
+  .result-item .name{flex:1; text-align:left}
+  .result-item .val{color:var(--gold); margin-left:10px}
 
   .wheel-wrap{display:flex; justify-content:center; padding:8px 0}
   .wheel{
@@ -297,16 +336,27 @@
   <div class="screen" id="screen-cases">
     <div class="title-row">📦  ОТКРЫТИЕ КЕЙСОВ</div>
     <div class="case-tabs" id="caseTabs"></div>
+
     <div class="case-card" id="caseCard">
       <div class="case-price" id="casePrice"></div>
       <div class="case-name" id="caseName">Нажми «Открыть»</div>
       <div class="case-rarity" id="caseRarity"></div>
       <div class="case-value" id="caseValue"></div>
+      <div id="caseResults"></div>
     </div>
+
+    <!-- Селектор количества -->
+    <div class="card count-row">
+      <label>Кейсов:</label>
+      <div class="count-btns" id="countBtns"></div>
+    </div>
+    <div class="total-price" id="caseTotalPrice"></div>
+
     <div class="btn-row">
       <button class="btn purple" id="caseOpen">ОТКРЫТЬ</button>
       <button class="btn gold"   id="caseInstant">⚡ МГНОВЕННО</button>
     </div>
+
     <div class="status green" id="caseStatus"></div>
     <div class="status dim" id="caseInv" style="font-size:11px"></div>
   </div>
@@ -376,20 +426,22 @@
 /* ==================== КОНСТАНТЫ ==================== */
 const START_BALANCE = 1000;
 const HOUSE_EDGE = 0.10;
-
-/* ---- МНОЖИТЕЛИ ---- */
 const MULTIPLIERS = [1.2, 2, 3, 5, 10, 25, 100];
 
-/* ---- СЕКРЕТНЫЙ БОНУС УЛУЧШЕНИЯ ---- */
-/* Счётчик увеличивается ТОЛЬКО на прокрутах с ×100 */
-const UPGRADE_BONUS_EVERY = 5;     // каждый 5-й прокрут с ×100 = гарантированный успех
-const UPGRADE_BONUS_MULT  = 100;   // и множитель тот же ×100
+/* Секретный бонус ×100 — только на прокрутах ×100 */
+const UPGRADE_BONUS_EVERY = 5;
+const UPGRADE_BONUS_MULT  = 100;
 
-/* ---- ПРОМОКОДЫ ---- */
+/* Промокоды */
 const PROMO_COOLDOWN_MS = 3 * 60 * 1000;
 const PROMO_CODES = {
-  "666": { reward: 1000, message: "Дьявольский бонус!" },
+  "666": { reward: 1000,     message: "Дьявольский бонус!" },
+  "ПЁС": { reward: 10000000, message: "Собачий джекпот!" },
+  "ПЕС": { reward: 10000000, message: "Собачий джекпот!" },
 };
+
+/* Мульти-открытие кейсов */
+const CASE_COUNTS = [1, 2, 3, 5, 10];
 
 const RARITY_COLORS = {
   common:"#A0A6B8", uncommon:"#38D977", rare:"#529EFF",
@@ -443,7 +495,8 @@ const state = {
   inventory: [],
   soundOn: true,
   promoLastUse: 0,
-  upgSpinCount: 0,   // счётчик прокрутов ИМЕННО с ×100
+  upgSpinCount: 0,
+  caseCount: 1,   // сколько кейсов открывать за раз
 };
 
 function save(){
@@ -454,6 +507,7 @@ function save(){
       soundOn: state.soundOn,
       promoLastUse: state.promoLastUse,
       upgSpinCount: state.upgSpinCount,
+      caseCount: state.caseCount,
     }));
   }catch(e){}
 }
@@ -467,6 +521,7 @@ function load(){
     if(typeof d.soundOn === "boolean") state.soundOn = d.soundOn;
     if(typeof d.promoLastUse === "number") state.promoLastUse = d.promoLastUse;
     if(typeof d.upgSpinCount === "number") state.upgSpinCount = d.upgSpinCount;
+    if(typeof d.caseCount === "number") state.caseCount = d.caseCount;
   }catch(e){}
 }
 
@@ -852,6 +907,7 @@ $("betHigh").addEventListener("click", ()=>rollDice("high"));
 /* ==================== КЕЙСЫ ==================== */
 let currentCase = Object.keys(CASES)[0];
 let caseOpening = false;
+
 function buildCaseTabs(){
   const wrap = $("caseTabs");
   wrap.innerHTML = "";
@@ -869,20 +925,65 @@ function buildCaseTabs(){
     wrap.appendChild(b);
   });
 }
+
+function buildCountBtns(){
+  const wrap = $("countBtns");
+  wrap.innerHTML = "";
+  CASE_COUNTS.forEach(n=>{
+    const b = document.createElement("button");
+    b.className = "count-btn" + (n === state.caseCount ? " active" : "");
+    b.textContent = "×" + n;
+    b.addEventListener("click", ()=>{
+      if(caseOpening) return;
+      state.caseCount = n;
+      document.querySelectorAll(".count-btn").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+      updateTotalPrice();
+      save();
+    });
+    wrap.appendChild(b);
+  });
+}
+
+function updateTotalPrice(){
+  if(caseOpening){
+    $("caseTotalPrice").innerHTML = "";
+    return;
+  }
+  const data = CASES[currentCase];
+  const total = data.price * state.caseCount;
+  const enough = state.balance >= total;
+  $("caseTotalPrice").innerHTML =
+    `Итого за ${state.caseCount} ${plural(state.caseCount, "кейс", "кейса", "кейсов")}: ` +
+    `<b style="${enough ? "" : "color:var(--red)"}">${fmt(total)} ₽</b>` +
+    (enough ? "" : " · <span style='color:var(--red)'>Мало денег</span>");
+}
+
+function plural(n, one, few, many){
+  const mod10 = n % 10, mod100 = n % 100;
+  if(mod10 === 1 && mod100 !== 11) return one;
+  if(mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+  return many;
+}
+
 function selectCase(){
   $("casePrice").textContent = "Цена: " + fmt(CASES[currentCase].price) + " ₽";
   $("caseName").textContent = "Нажми «Открыть»";
   $("caseName").style.color = "var(--text)";
   $("caseRarity").textContent = "";
   $("caseValue").textContent = "";
+  $("caseResults").innerHTML = "";
   setStatus("caseStatus","","dim");
   $("caseCard").style.background = "var(--surface)";
   refreshCaseInv();
+  updateTotalPrice();
 }
+
 function refreshCaseInv(){
   const total = state.inventory.reduce((s,it)=>s+it.value,0);
   $("caseInv").textContent = `🎒 В инвентаре: ${state.inventory.length} · ${fmt(total)} ₽`;
 }
+
 function pickItem(items){
   const weights = items.map(it=>it[3]);
   const total = weights.reduce((a,b)=>a+b,0);
@@ -893,20 +994,46 @@ function pickItem(items){
   }
   return items[items.length - 1];
 }
+
 function caseOpen(instant){
   if(caseOpening) return;
   const data = CASES[currentCase];
-  if(state.balance < data.price){ setStatus("caseStatus","Мало денег!","red"); return; }
-  addBalance(-data.price);
+  const count = state.caseCount || 1;
+  const totalPrice = data.price * count;
+  if(state.balance < totalPrice){
+    setStatus("caseStatus", `Мало денег! Нужно ${fmt(totalPrice)} ₽`, "red");
+    return;
+  }
+  addBalance(-totalPrice);
   caseOpening = true;
   $("caseOpen").disabled = true;
   $("caseInstant").disabled = true;
+  $("caseResults").innerHTML = "";
   $("caseValue").textContent = "???";
-  if(instant){ caseFinish(); return; }
+  $("caseTotalPrice").innerHTML = "";
+  setStatus("caseStatus", `Открываем ${count} ${plural(count, "кейс","кейса","кейсов")}...`, "gold");
+
+  // Заранее определяем все выпавшие предметы
+  const results = [];
+  for(let k=0;k<count;k++){
+    results.push(pickItem(data.items));
+  }
+
+  if(instant || count > 1){
+    // Мульти или мгновенно — короткая анимация прокрутки, потом финал
+    if(count === 1){
+      caseFinish([results[0]]);
+    }else{
+      caseAnimMulti(results);
+    }
+    return;
+  }
+
+  // Одиночное открытие — обычная длинная анимация
   const total = 22;
   let i = 0;
   function tick(){
-    if(i >= total){ caseFinish(); return; }
+    if(i >= total){ caseFinish([results[0]]); return; }
     const it = data.items[Math.floor(Math.random()*data.items.length)];
     $("caseName").textContent = it[0];
     $("caseName").style.color = RARITY_COLORS[it[2]];
@@ -918,36 +1045,110 @@ function caseOpen(instant){
   }
   tick();
 }
-function caseFinish(){
+
+function caseAnimMulti(results){
+  // Быстрая анимация прокрутки для мульти-открытия
   const data = CASES[currentCase];
-  const it = pickItem(data.items);
-  const [name, value, rarity] = it;
-  $("caseName").textContent = name;
-  $("caseName").style.color = RARITY_COLORS[rarity];
-  $("caseRarity").textContent = RARITY_RU[rarity].toUpperCase();
-  $("caseRarity").style.color = RARITY_COLORS[rarity];
-  $("caseValue").textContent = fmt(value) + " ₽";
-  $("caseCard").style.background = RARITY_BG[rarity];
-  state.inventory.push({name, value, rarity, stars:0});
+  const count = results.length;
+  const total = 8 + count; // короче, но заметнее для многих
+  let i = 0;
+  function tick(){
+    if(i >= total){
+      caseFinish(results);
+      return;
+    }
+    const it = data.items[Math.floor(Math.random()*data.items.length)];
+    $("caseName").textContent = it[0];
+    $("caseName").style.color = RARITY_COLORS[it[2]];
+    $("caseCard").style.background = RARITY_BG[it[2]];
+    beep(1000, 0.02, 0.05);
+    i++;
+    setTimeout(tick, 60 + i * 5);
+  }
+  tick();
+}
+
+function caseFinish(results){
+  const data = CASES[currentCase];
+  const count = results.length;
+
+  // Считаем суммарную стоимость и лучший предмет
+  let totalValue = 0;
+  let bestIdx = 0;
+  let hasLegendary = false;
+  results.forEach((it, idx)=>{
+    totalValue += it[1];
+    if(it[1] > results[bestIdx][1]) bestIdx = idx;
+    if(it[2] === "legendary") hasLegendary = true;
+    // Добавляем в инвентарь
+    state.inventory.push({name: it[0], value: it[1], rarity: it[2], stars:0});
+  });
   save();
   refreshCaseInv();
   refreshUpgInv();
-  if(rarity === "legendary"){
-    setStatus("caseStatus", `🔥 ДЖЕКПОТ! ${name}`,"gold");
-    sfx([[660,0.13],[880,0.13],[1100,0.13],[1320,0.3]]);
+
+  const best = results[bestIdx];
+
+  if(count === 1){
+    // Одиночное открытие — старая логика
+    const [name, value, rarity] = results[0];
+    $("caseName").textContent = name;
+    $("caseName").style.color = RARITY_COLORS[rarity];
+    $("caseRarity").textContent = RARITY_RU[rarity].toUpperCase();
+    $("caseRarity").style.color = RARITY_COLORS[rarity];
+    $("caseValue").textContent = fmt(value) + " ₽";
+    $("caseCard").style.background = RARITY_BG[rarity];
+
+    if(rarity === "legendary"){
+      setStatus("caseStatus", `🔥 ДЖЕКПОТ! ${name}`,"gold");
+      sfx([[660,0.13],[880,0.13],[1100,0.13],[1320,0.3]]);
+    }else{
+      setStatus("caseStatus", `🎁 ${name} → в инвентарь`,"green");
+      sfx([[880,0.1],[1180,0.15]]);
+    }
   }else{
-    setStatus("caseStatus", `🎁 ${name} → в инвентарь`,"green");
-    sfx([[880,0.1],[1180,0.15]]);
+    // Мульти-открытие
+    $("caseName").textContent = `×${count}`;
+    $("caseName").style.color = "var(--gold)";
+    $("caseRarity").textContent = `Открыто ${count} ${plural(count,"кейс","кейса","кейсов")}`;
+    $("caseRarity").style.color = "var(--text-dim)";
+    $("caseValue").textContent = `+${fmt(totalValue)} ₽`;
+    $("caseCard").style.background = hasLegendary ? RARITY_BG.legendary : RARITY_BG.epic;
+
+    // Список результатов
+    const wrap = $("caseResults");
+    wrap.innerHTML = "";
+    const list = document.createElement("div");
+    list.className = "results-list";
+    results.forEach(it=>{
+      const row = document.createElement("div");
+      row.className = "result-item rarity-" + it[2];
+      row.innerHTML = `<span class="name">${it[0]}</span>` +
+                      `<span class="val">${fmt(it[1])} ₽</span>`;
+      list.appendChild(row);
+    });
+    wrap.appendChild(list);
+
+    if(hasLegendary){
+      setStatus("caseStatus", `🔥 Есть ЛЕГЕНДАРКА! Лучшее: ${best[0]} (${fmt(best[1])} ₽)`,"gold");
+      sfx([[660,0.13],[880,0.13],[1100,0.13],[1320,0.3]]);
+    }else{
+      setStatus("caseStatus", `🎁 Открыто ${count}, лучшее: ${best[0]} (${fmt(best[1])} ₽)`,"green");
+      sfx([[880,0.1],[1180,0.15]]);
+    }
   }
+
   caseOpening = false;
   $("caseOpen").disabled = false;
   $("caseInstant").disabled = false;
+  updateTotalPrice();
 }
+
 $("caseOpen").addEventListener("click", ()=>caseOpen(false));
 $("caseInstant").addEventListener("click", ()=>caseOpen(true));
 
 /* ==================== УЛУЧШЕНИЕ ==================== */
-let upgMult = 1.2;   // по умолчанию — 75% шанс
+let upgMult = 1.2;
 let upgSelected = null;
 let upgSpinning = false;
 
@@ -1053,9 +1254,6 @@ function doUpgrade(){
   const it = state.inventory[idx];
   if(!it) return;
 
-  /* ------ ЛОГИКА СЕКРЕТНОГО БОНУСА ------ */
-  /* Счётчик увеличивается ТОЛЬКО на прокрутах с ×100.
-     Бонус срабатывает на каждом 5-м прокруте ИМЕННО с ×100. */
   const isX100Spin = (upgMult === UPGRADE_BONUS_MULT);
   let isBonus = false;
 
@@ -1064,7 +1262,6 @@ function doUpgrade(){
     isBonus = (state.upgSpinCount % UPGRADE_BONUS_EVERY === 0);
   }
 
-  /* Если не бонус — обычный расчёт по house edge */
   const effectiveMult = isBonus ? UPGRADE_BONUS_MULT : upgMult;
   const chance = isBonus ? 1 : (1 - HOUSE_EDGE) / upgMult;
   const success = isBonus ? true : Math.random() < chance;
@@ -1180,6 +1377,7 @@ function init(){
   load();
   refreshBalance();
   buildCaseTabs();
+  buildCountBtns();
   selectCase();
   buildMultRow();
   refreshUpgInv();
