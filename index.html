@@ -167,12 +167,17 @@
   .dice-sum{text-align:center; font-size:22px; font-weight:800; color:var(--green); padding:6px 0}
 
   /* ---- CASES ---- */
-  .case-tabs{display:flex; gap:6px}
+  .case-tabs{display:flex; gap:5px; flex-wrap:wrap}
   .case-tab{
-    flex:1; padding:10px; border-radius:10px; background:var(--surface2);
+    flex:1 1 calc(33.333% - 4px);
+    min-width:88px;
+    padding:9px 6px; border-radius:8px; background:var(--surface2);
     color:var(--text); font-weight:700; border:none; cursor:pointer;
-    font-family:inherit; font-size:13px;
+    font-family:inherit; font-size:11px; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis;
+    transition:filter .15s;
   }
+  .case-tab:hover{filter:brightness(1.15)}
   .case-tab.active{background:var(--gold-deep); color:#1A1400}
 
   .case-card{
@@ -185,7 +190,6 @@
   .case-rarity{font-size:12px; font-weight:700; letter-spacing:1px; transition:color .15s}
   .case-value{font-size:20px; font-weight:800; color:var(--gold); margin-top:8px}
 
-  /* Мульти-открытие */
   .count-row{
     display:flex; gap:6px; align-items:center;
   }
@@ -208,7 +212,6 @@
   }
   .total-price b{color:var(--gold)}
 
-  /* Список результатов мульти-открытия */
   .results-list{
     display:flex; flex-direction:column; gap:4px;
     max-height:250px; overflow-y:auto; padding-right:4px;
@@ -345,7 +348,6 @@
       <div id="caseResults"></div>
     </div>
 
-    <!-- Селектор количества -->
     <div class="card count-row">
       <label>Кейсов:</label>
       <div class="count-btns" id="countBtns"></div>
@@ -428,11 +430,9 @@ const START_BALANCE = 1000;
 const HOUSE_EDGE = 0.10;
 const MULTIPLIERS = [1.2, 2, 3, 5, 10, 25, 100];
 
-/* Секретный бонус ×100 — только на прокрутах ×100 */
 const UPGRADE_BONUS_EVERY = 5;
 const UPGRADE_BONUS_MULT  = 100;
 
-/* Промокоды */
 const PROMO_COOLDOWN_MS = 3 * 60 * 1000;
 const PROMO_CODES = {
   "666": { reward: 1000,     message: "Дьявольский бонус!" },
@@ -440,7 +440,6 @@ const PROMO_CODES = {
   "ПЕС": { reward: 10000000, message: "Собачий джекпот!" },
 };
 
-/* Мульти-открытие кейсов */
 const CASE_COUNTS = [1, 2, 3, 5, 10];
 
 const RARITY_COLORS = {
@@ -456,18 +455,63 @@ const RARITY_RU = {
   epic:"эпический", legendary:"легендарный"
 };
 
+/* ==================== КЕЙСЫ ==================== */
 const CASES = {
+  "Дерево": { price:25, items:[
+    ["Палка",      5, "common",    50],
+    ["Камень",    10, "common",    30],
+    ["Кожа",      25, "uncommon",  13],
+    ["Железо",    50, "rare",       5],
+    ["Серебро",  150, "epic",     1.7],
+    ["Золото",   600, "legendary",0.3],
+  ]},
   "Бронза": { price:100, items:[
-    ["Нож",20,"common",50],["Щит",50,"common",30],["Топор",100,"uncommon",13],
-    ["Меч",200,"rare",5],["Шар",500,"epic",1.7],["Корона",2000,"legendary",0.3]
+    ["Нож",       20, "common",    50],
+    ["Щит",       50, "common",    30],
+    ["Топор",    100, "uncommon",  13],
+    ["Меч",      200, "rare",       5],
+    ["Шар",      500, "epic",     1.7],
+    ["Корона",  2000, "legendary",0.3],
   ]},
   "Серебро": { price:500, items:[
-    ["Клинок",100,"common",50],["Щит",250,"common",30],["Топор",500,"uncommon",13],
-    ["Меч",1000,"rare",5],["Шар",2500,"epic",1.7],["Корона",10000,"legendary",0.3]
+    ["Клинок",   100, "common",    50],
+    ["Щит",      250, "common",    30],
+    ["Топор",    500, "uncommon",  13],
+    ["Меч",     1000, "rare",       5],
+    ["Шар",     2500, "epic",     1.7],
+    ["Корона", 10000, "legendary",0.3],
   ]},
   "Золото": { price:2000, items:[
-    ["Клинок",500,"common",50],["Щит",1000,"common",30],["Секира",2000,"uncommon",13],
-    ["Экскалибур",4000,"rare",5],["Око",10000,"epic",1.7],["Корона",40000,"legendary",0.3]
+    ["Клинок",     500, "common",    50],
+    ["Щит",       1000, "common",    30],
+    ["Секира",    2000, "uncommon",  13],
+    ["Экскалибур",4000, "rare",       5],
+    ["Око",      10000, "epic",     1.7],
+    ["Корона",   40000, "legendary",0.3],
+  ]},
+  "Платина": { price:10000, items:[
+    ["Клинок",    2500, "common",    50],
+    ["Щит",       5000, "common",    30],
+    ["Секира",   10000, "uncommon",  13],
+    ["Экскалибур",20000,"rare",       5],
+    ["Око",      50000, "epic",     1.7],
+    ["Корона",  200000, "legendary",0.3],
+  ]},
+  "Алмаз": { price:50000, items:[
+    ["Клинок",   12000, "common",    50],
+    ["Щит",      25000, "common",    30],
+    ["Секира",   50000, "uncommon",  13],
+    ["Экскалибур",100000,"rare",       5],
+    ["Око",     250000, "epic",     1.7],
+    ["Корона", 1000000, "legendary",0.3],
+  ]},
+  "Легенда": { price:200000, items:[
+    ["Клинок",    50000, "common",    50],
+    ["Щит",      100000, "common",    30],
+    ["Секира",   200000, "uncommon",  13],
+    ["Экскалибур",400000,"rare",       5],
+    ["Око",     1000000, "epic",     1.7],
+    ["Корона",  5000000, "legendary",0.3],
   ]},
 };
 
@@ -496,7 +540,7 @@ const state = {
   soundOn: true,
   promoLastUse: 0,
   upgSpinCount: 0,
-  caseCount: 1,   // сколько кейсов открывать за раз
+  caseCount: 1,
 };
 
 function save(){
@@ -1013,14 +1057,12 @@ function caseOpen(instant){
   $("caseTotalPrice").innerHTML = "";
   setStatus("caseStatus", `Открываем ${count} ${plural(count, "кейс","кейса","кейсов")}...`, "gold");
 
-  // Заранее определяем все выпавшие предметы
   const results = [];
   for(let k=0;k<count;k++){
     results.push(pickItem(data.items));
   }
 
   if(instant || count > 1){
-    // Мульти или мгновенно — короткая анимация прокрутки, потом финал
     if(count === 1){
       caseFinish([results[0]]);
     }else{
@@ -1029,7 +1071,6 @@ function caseOpen(instant){
     return;
   }
 
-  // Одиночное открытие — обычная длинная анимация
   const total = 22;
   let i = 0;
   function tick(){
@@ -1047,10 +1088,9 @@ function caseOpen(instant){
 }
 
 function caseAnimMulti(results){
-  // Быстрая анимация прокрутки для мульти-открытия
   const data = CASES[currentCase];
   const count = results.length;
-  const total = 8 + count; // короче, но заметнее для многих
+  const total = 8 + count;
   let i = 0;
   function tick(){
     if(i >= total){
@@ -1072,7 +1112,6 @@ function caseFinish(results){
   const data = CASES[currentCase];
   const count = results.length;
 
-  // Считаем суммарную стоимость и лучший предмет
   let totalValue = 0;
   let bestIdx = 0;
   let hasLegendary = false;
@@ -1080,7 +1119,6 @@ function caseFinish(results){
     totalValue += it[1];
     if(it[1] > results[bestIdx][1]) bestIdx = idx;
     if(it[2] === "legendary") hasLegendary = true;
-    // Добавляем в инвентарь
     state.inventory.push({name: it[0], value: it[1], rarity: it[2], stars:0});
   });
   save();
@@ -1090,7 +1128,6 @@ function caseFinish(results){
   const best = results[bestIdx];
 
   if(count === 1){
-    // Одиночное открытие — старая логика
     const [name, value, rarity] = results[0];
     $("caseName").textContent = name;
     $("caseName").style.color = RARITY_COLORS[rarity];
@@ -1107,7 +1144,6 @@ function caseFinish(results){
       sfx([[880,0.1],[1180,0.15]]);
     }
   }else{
-    // Мульти-открытие
     $("caseName").textContent = `×${count}`;
     $("caseName").style.color = "var(--gold)";
     $("caseRarity").textContent = `Открыто ${count} ${plural(count,"кейс","кейса","кейсов")}`;
@@ -1115,7 +1151,6 @@ function caseFinish(results){
     $("caseValue").textContent = `+${fmt(totalValue)} ₽`;
     $("caseCard").style.background = hasLegendary ? RARITY_BG.legendary : RARITY_BG.epic;
 
-    // Список результатов
     const wrap = $("caseResults");
     wrap.innerHTML = "";
     const list = document.createElement("div");
