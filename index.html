@@ -1056,6 +1056,7 @@ function pickItem(items){
   return items[items.length - 1];
 }
 
+/* ==================== ОТКРЫТИЕ КЕЙСОВ ==================== */
 function caseOpen(instant){
   if(caseOpening) return;
   const data = CASES[currentCase];
@@ -1072,36 +1073,42 @@ function caseOpen(instant){
   $("caseResults").innerHTML = "";
   $("caseValue").textContent = "???";
   $("caseTotalPrice").innerHTML = "";
-  setStatus("caseStatus", `Открываем ${count} ${plural(count, "кейс","кейса","кейсов")}...`, "gold");
 
+  // Определяем результат сразу
   const results = [];
   for(let k=0;k<count;k++){
     results.push(pickItem(data.items));
   }
 
-  if(instant || count > 1){
-    if(count === 1){
-      caseFinish([results[0]]);
-    }else{
-      caseAnimMulti(results);
-    }
+  // ⚡ МГНОВЕННО — сразу показываем результат, независимо от count
+  if(instant){
+    caseFinish(results);
     return;
   }
 
-  const total = 22;
-  let i = 0;
-  function tick(){
-    if(i >= total){ caseFinish([results[0]]); return; }
-    const it = data.items[Math.floor(Math.random()*data.items.length)];
-    $("caseName").textContent = it[0];
-    $("caseName").style.color = RARITY_COLORS[it[2]];
-    $("caseCard").style.background = RARITY_BG[it[2]];
-    beep(1000, 0.02, 0.05);
-    const delay = 50 + i * 6;
-    i++;
-    setTimeout(tick, delay);
+  // Обычная анимация
+  setStatus("caseStatus", `Открываем ${count} ${plural(count, "кейс","кейса","кейсов")}...`, "gold");
+
+  if(count === 1){
+    // Одиночное открытие — длинная прокрутка
+    const total = 22;
+    let i = 0;
+    function tick(){
+      if(i >= total){ caseFinish([results[0]]); return; }
+      const it = data.items[Math.floor(Math.random()*data.items.length)];
+      $("caseName").textContent = it[0];
+      $("caseName").style.color = RARITY_COLORS[it[2]];
+      $("caseCard").style.background = RARITY_BG[it[2]];
+      beep(1000, 0.02, 0.05);
+      const delay = 50 + i * 6;
+      i++;
+      setTimeout(tick, delay);
+    }
+    tick();
+  }else{
+    // Мульти-открытие — короткая прокрутка
+    caseAnimMulti(results);
   }
-  tick();
 }
 
 function caseAnimMulti(results){
