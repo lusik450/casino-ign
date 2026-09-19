@@ -22,8 +22,6 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     display:flex; flex-direction:column; user-select:none;
   }
-
-  /* ---- TOP BAR ---- */
   .topbar{
     height:62px; background:var(--surface); display:flex; align-items:center;
     padding:0 14px; gap:10px; flex-shrink:0;
@@ -46,7 +44,6 @@
   .icon-btn:hover{background:var(--surface2)}
   .icon-btn.off{color:var(--text-dim)}
 
-  /* ---- CONTENT ---- */
   .content{flex:1; overflow-y:auto; padding:12px; scrollbar-width:thin}
   .content::-webkit-scrollbar{width:6px}
   .content::-webkit-scrollbar-thumb{background:var(--surface3); border-radius:3px}
@@ -54,7 +51,6 @@
   .screen.active{display:flex}
   @keyframes fade{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
 
-  /* ---- CARDS / PANELS ---- */
   .card{
     background:var(--surface); border:1px solid var(--surface3);
     border-radius:12px; padding:14px;
@@ -69,7 +65,6 @@
     font-size:16px; letter-spacing:.5px;
   }
 
-  /* ---- BUTTONS ---- */
   .btn{
     background:var(--surface2); color:var(--text); border:none;
     padding:11px 14px; border-radius:10px; cursor:pointer;
@@ -86,7 +81,6 @@
   .btn.blue{background:var(--blue-d); color:#fff}
   .btn-row{display:flex; gap:6px}
 
-  /* ---- BLACKJACK ---- */
   .bj-cards{
     display:flex; gap:6px; min-height:86px; padding:4px 0;
     overflow-x:auto; scrollbar-width:none;
@@ -122,7 +116,6 @@
   .status.gold{color:var(--gold)}
   .status.dim{color:var(--text-dim); font-weight:600}
 
-  /* ---- INPUT ---- */
   .input-row{display:flex; gap:10px; align-items:center}
   .input-row label{color:var(--text-dim); font-size:12px; font-weight:600}
   .input{
@@ -133,7 +126,6 @@
   }
   .input:focus{border-color:var(--gold)}
 
-  /* ---- PROMO ---- */
   .promo-card{
     text-align:center; padding:22px 14px; background:var(--surface);
     border-radius:12px; border:1px solid var(--surface3);
@@ -162,7 +154,6 @@
   }
   .cooldown-label{font-size:12px; color:var(--text-dim); margin-top:4px}
 
-  /* ---- DICE ---- */
   .dice-wrap{display:flex; justify-content:center; gap:24px; padding:14px 0}
   .die{
     width:100px; height:100px; background:var(--card-face); border-radius:50%;
@@ -175,7 +166,6 @@
   }
   .dice-sum{text-align:center; font-size:22px; font-weight:800; color:var(--green); padding:6px 0}
 
-  /* ---- CASES ---- */
   .case-tabs{display:flex; gap:6px}
   .case-tab{
     flex:1; padding:10px; border-radius:10px; background:var(--surface2);
@@ -194,14 +184,12 @@
   .case-rarity{font-size:12px; font-weight:700; letter-spacing:1px; transition:color .15s}
   .case-value{font-size:20px; font-weight:800; color:var(--gold); margin-top:8px}
 
-  /* ---- WHEEL ---- */
   .wheel-wrap{display:flex; justify-content:center; padding:8px 0}
   .wheel{
     width:200px; height:200px; transition:transform 0s;
     filter:drop-shadow(0 4px 16px rgba(0,0,0,0.5));
   }
 
-  /* ---- INVENTORY ---- */
   .inv-list{display:flex; flex-direction:column; gap:4px; max-height:230px; overflow-y:auto; padding-right:4px}
   .inv-list::-webkit-scrollbar{width:6px}
   .inv-list::-webkit-scrollbar-thumb{background:var(--surface3); border-radius:3px}
@@ -218,15 +206,14 @@
   .rarity-epic{background:#251538; color:#A659F2}
   .rarity-legendary{background:#332706; color:#FFCC33}
 
-  .mult-row{display:flex; gap:4px}
+  .mult-row{display:flex; gap:3px}
   .mult-btn{
-    flex:1; padding:9px 4px; background:var(--surface2); color:var(--text);
+    flex:1; padding:9px 2px; background:var(--surface2); color:var(--text);
     border:none; border-radius:8px; font-weight:700; cursor:pointer;
-    font-family:inherit; font-size:12px;
+    font-family:inherit; font-size:11px; min-width:0;
   }
   .mult-btn.active{background:var(--gold-deep); color:#1A1400}
 
-  /* ---- TABBAR ---- */
   .tabbar{
     display:grid; grid-template-columns:repeat(5,1fr);
     background:#0E1220; flex-shrink:0; padding-bottom:env(safe-area-inset-bottom);
@@ -239,7 +226,6 @@
   .tab .emoji{display:block; font-size:20px; margin-bottom:2px}
   .tab.active{color:var(--gold); background:#161B2E}
 
-  /* ---- TOAST ---- */
   .toast{
     position:fixed; top:72px; left:50%; transform:translateX(-50%);
     background:rgba(0,0,0,0.85); color:#fff; padding:10px 18px;
@@ -260,27 +246,23 @@
 
 <div class="content" id="content">
 
-  <!-- ==================== BLACKJACK ==================== -->
+  <!-- BLACKJACK -->
   <div class="screen" id="screen-blackjack">
     <div class="card">
       <div class="card-hdr"><span class="accent-gold"></span><span style="color:var(--gold)">ДИЛЕР</span></div>
       <div class="bj-cards" id="dealerCards"></div>
       <div class="status dim" id="dealerScore" style="font-size:12px"></div>
     </div>
-
     <div class="status green" id="bjStatus">Нажми «Раздать», чтобы начать</div>
-
     <div class="card">
       <div class="card-hdr"><span class="accent-green"></span><span style="color:var(--green)">ИГРОК</span></div>
       <div class="bj-cards" id="playerCards"></div>
       <div class="status dim" id="playerScore" style="font-size:12px"></div>
     </div>
-
     <div class="card input-row">
       <label>Ставка</label>
       <input class="input" id="bjBet" type="number" value="50" min="10">
     </div>
-
     <div class="btn-row">
       <button class="btn gold"  id="bjDeal">Раздать</button>
       <button class="btn green" id="bjHit" disabled>Взять</button>
@@ -289,10 +271,9 @@
     </div>
   </div>
 
-  <!-- ==================== DICE ==================== -->
+  <!-- DICE -->
   <div class="screen" id="screen-dice">
     <div class="title-row">🎲  ИГРА В КОСТИ</div>
-
     <div class="card">
       <div class="dice-wrap">
         <div class="die" id="die1"></div>
@@ -300,96 +281,74 @@
       </div>
       <div class="dice-sum" id="diceSum">Сумма: —</div>
     </div>
-
     <div class="card input-row">
       <label>Ставка</label>
       <input class="input" id="diceBet" type="number" value="50" min="10">
     </div>
-
     <div class="btn-row">
       <button class="btn blue" id="betLow">&lt; 7<br>×2</button>
       <button class="btn gold" id="betSeven">= 7<br>×5</button>
       <button class="btn red"  id="betHigh">&gt; 7<br>×2</button>
     </div>
-
     <div class="status gold" id="diceStatus">Выбери исход</div>
   </div>
 
-  <!-- ==================== CASES ==================== -->
+  <!-- CASES -->
   <div class="screen" id="screen-cases">
     <div class="title-row">📦  ОТКРЫТИЕ КЕЙСОВ</div>
-
     <div class="case-tabs" id="caseTabs"></div>
-
     <div class="case-card" id="caseCard">
       <div class="case-price" id="casePrice"></div>
       <div class="case-name" id="caseName">Нажми «Открыть»</div>
       <div class="case-rarity" id="caseRarity"></div>
       <div class="case-value" id="caseValue"></div>
     </div>
-
     <div class="btn-row">
       <button class="btn purple" id="caseOpen">ОТКРЫТЬ</button>
       <button class="btn gold"   id="caseInstant">⚡ МГНОВЕННО</button>
     </div>
-
     <div class="status green" id="caseStatus"></div>
     <div class="status dim" id="caseInv" style="font-size:11px"></div>
   </div>
 
-  <!-- ==================== UPGRADE ==================== -->
+  <!-- UPGRADE -->
   <div class="screen" id="screen-upgrade">
     <div class="title-row">🔧  УЛУЧШЕНИЕ</div>
-
     <div class="wheel-wrap">
       <svg class="wheel" id="wheel" viewBox="0 0 200 200"></svg>
     </div>
-
     <div class="status gold" id="upgSelected">Выбери предмет</div>
-
     <div class="mult-row" id="multRow"></div>
-
     <div class="status green" id="upgChance"></div>
-
     <button class="btn purple" id="upgBtn" disabled style="padding:14px; font-size:14px">УЛУЧШИТЬ</button>
-
     <div class="status gold" id="upgStatus"></div>
-
     <div class="card-hdr" style="margin-top:6px"><span class="accent-blue"></span><span style="color:var(--blue)">🎒 Инвентарь</span></div>
     <div class="inv-list" id="upgInv"></div>
-
     <div class="btn-row">
       <button class="btn green" id="sellSelected">💰 Продать</button>
       <button class="btn green" id="sellAll">💰💰 Продать всё</button>
     </div>
   </div>
 
-  <!-- ==================== PROMO ==================== -->
+  <!-- PROMO -->
   <div class="screen" id="screen-promo">
     <div class="title-row">🎟️  ПРОМОКОД</div>
-
     <div class="promo-card" id="promoCard">
       <div class="promo-emoji">🎁</div>
       <div class="promo-title">Введи промокод</div>
       <div class="promo-hint">Получи бонус на баланс!<br>Новые коды — следи за обновлениями</div>
     </div>
-
     <input class="promo-input" id="promoInput" type="text"
-           placeholder="XXXXXX" maxlength="20" autocomplete="off"
-           spellcheck="false">
-
+           placeholder="XXXXXX" maxlength="20" autocomplete="off" spellcheck="false">
     <button class="btn gold" id="promoBtn"
             style="padding:14px; font-size:15px; font-weight:800">
       АКТИВИРОВАТЬ
     </button>
-
     <div class="status gold" id="promoStatus"></div>
-
     <div class="cooldown-box" id="promoCooldownBox" style="display:none">
       <div class="cooldown-time" id="promoCooldownTime">03:00</div>
       <div class="cooldown-label">⏳ Следующий промокод доступен через</div>
     </div>
-
     <div class="card">
       <div class="card-hdr"><span class="accent-blue"></span><span style="color:var(--blue)">ℹ️ Как это работает</span></div>
       <div style="font-size:12px; color:var(--text-dim); line-height:1.7">
@@ -417,13 +376,19 @@
 /* ==================== КОНСТАНТЫ ==================== */
 const START_BALANCE = 1000;
 const HOUSE_EDGE = 0.10;
-const MULTIPLIERS = [2, 3, 5, 10, 25, 100];
+
+/* ---- МНОЖИТЕЛИ ---- */
+const MULTIPLIERS = [1.2, 2, 3, 5, 10, 25, 100];
+
+/* ---- СЕКРЕТНЫЙ БОНУС УЛУЧШЕНИЯ ---- */
+/* Счётчик увеличивается ТОЛЬКО на прокрутах с ×100 */
+const UPGRADE_BONUS_EVERY = 5;     // каждый 5-й прокрут с ×100 = гарантированный успех
+const UPGRADE_BONUS_MULT  = 100;   // и множитель тот же ×100
 
 /* ---- ПРОМОКОДЫ ---- */
-const PROMO_COOLDOWN_MS = 3 * 60 * 1000; // 3 минуты
+const PROMO_COOLDOWN_MS = 3 * 60 * 1000;
 const PROMO_CODES = {
   "666": { reward: 1000, message: "Дьявольский бонус!" },
-  // Сюда можно добавлять ещё: "HELLO": { reward: 500, message: "..." }
 };
 
 const RARITY_COLORS = {
@@ -466,6 +431,9 @@ function valueToRarity(v){
   if(v<10000) return "epic";
   return "legendary";
 }
+function fmtMult(m){
+  return Number.isInteger(m) ? String(m) : m.toFixed(2).replace(/0+$/,"").replace(/\.$/,"");
+}
 
 /* ==================== СОСТОЯНИЕ + SAVE ==================== */
 const SAVE_KEY = "python_casino_web_v1";
@@ -474,7 +442,8 @@ const state = {
   balance: START_BALANCE,
   inventory: [],
   soundOn: true,
-  promoLastUse: 0,   // timestamp последнего использования промокода
+  promoLastUse: 0,
+  upgSpinCount: 0,   // счётчик прокрутов ИМЕННО с ×100
 };
 
 function save(){
@@ -484,6 +453,7 @@ function save(){
       inventory: state.inventory,
       soundOn: state.soundOn,
       promoLastUse: state.promoLastUse,
+      upgSpinCount: state.upgSpinCount,
     }));
   }catch(e){}
 }
@@ -496,6 +466,7 @@ function load(){
     if(Array.isArray(d.inventory)) state.inventory = d.inventory;
     if(typeof d.soundOn === "boolean") state.soundOn = d.soundOn;
     if(typeof d.promoLastUse === "number") state.promoLastUse = d.promoLastUse;
+    if(typeof d.upgSpinCount === "number") state.upgSpinCount = d.upgSpinCount;
   }catch(e){}
 }
 
@@ -511,7 +482,7 @@ function toast(msg){
   t._tm = setTimeout(()=>t.classList.remove("show"), 1200);
 }
 
-/* ==================== ЗВУК (Web Audio) ==================== */
+/* ==================== ЗВУК ==================== */
 let audioCtx = null;
 function ensureAudio(){
   if(audioCtx) return audioCtx;
@@ -587,16 +558,13 @@ function promoRemainingMs(){
   const left = PROMO_COOLDOWN_MS - elapsed;
   return left > 0 ? left : 0;
 }
-
 function formatMMSS(ms){
   const total = Math.ceil(ms / 1000);
   const m = String(Math.floor(total / 60)).padStart(2, "0");
   const s = String(total % 60).padStart(2, "0");
   return m + ":" + s;
 }
-
 let promoInterval = null;
-
 function refreshPromoUI(){
   const left = promoRemainingMs();
   const input = $("promoInput");
@@ -609,7 +577,6 @@ function refreshPromoUI(){
     btn.disabled = true;
     cdBox.style.display = "";
     cdTime.textContent = formatMMSS(left);
-
     if(!promoInterval){
       promoInterval = setInterval(()=>{
         const l = promoRemainingMs();
@@ -632,55 +599,40 @@ function refreshPromoUI(){
     }
   }
 }
-
 function usePromo(){
   const left = promoRemainingMs();
   if(left > 0){
-    setStatus("promoStatus",
-      `⏳ Подожди ещё ${formatMMSS(left)}`, "red");
+    setStatus("promoStatus", `⏳ Подожди ещё ${formatMMSS(left)}`, "red");
     return;
   }
-
   const raw = $("promoInput").value.trim().toUpperCase();
   if(!raw){
     setStatus("promoStatus","Введи промокод","red");
     beep(300, 0.15, 0.15);
     return;
   }
-
   const code = PROMO_CODES[raw];
   if(!code){
     setStatus("promoStatus", `❌ Неверный код: ${raw}`, "red");
     sfx([[320,0.12],[220,0.2]]);
     return;
   }
-
-  // Активируем!
   state.promoLastUse = Date.now();
   addBalance(code.reward);
   save();
-
-  // Эффекты
   const card = $("promoCard");
   card.style.background = RARITY_BG.legendary;
   setTimeout(()=>{ card.style.background = "var(--surface)"; }, 1500);
-
-  setStatus("promoStatus",
-    `🎉 ${code.message}  +${fmt(code.reward)} ₽`, "green");
+  setStatus("promoStatus", `🎉 ${code.message}  +${fmt(code.reward)} ₽`, "green");
   toast(`🎁 +${fmt(code.reward)} ₽ за промокод`);
-
-  // Звук победы
   sfx([[660,0.13],[880,0.13],[1100,0.13],[1320,0.3]]);
-
   $("promoInput").value = "";
   refreshPromoUI();
 }
-
 $("promoBtn").addEventListener("click", usePromo);
 $("promoInput").addEventListener("keydown", (e)=>{
   if(e.key === "Enter") usePromo();
 });
-// Автоматически — при вводе в верхнем регистре
 $("promoInput").addEventListener("input", (e)=>{
   e.target.value = e.target.value.toUpperCase();
 });
@@ -706,18 +658,12 @@ function handVal(h){
   while(t>21 && aces>0){ t-=10; aces--; }
   return t;
 }
-
-const bj = {
-  deck:[], ph:[], dh:[], bet:50, inGame:false, hidden:true
-};
+const bj = { deck:[], ph:[], dh:[], bet:50, inGame:false, hidden:true };
 
 function renderCard(c, faceDown=false){
   const el = document.createElement("div");
   el.className = "playing-card";
-  if(faceDown){
-    el.classList.add("back");
-    return el;
-  }
+  if(faceDown){ el.classList.add("back"); return el; }
   const sym = SUIT_SYMBOL[c[1]];
   if(RED_SUITS.has(c[1])) el.classList.add("red");
   el.innerHTML = `
@@ -726,7 +672,6 @@ function renderCard(c, faceDown=false){
     <div class="suit-big">${sym}</div>`;
   return el;
 }
-
 function bjUpdate(){
   const dc = $("dealerCards");
   dc.innerHTML = "";
@@ -743,19 +688,16 @@ function bjUpdate(){
   bj.ph.forEach(c=>pc.appendChild(renderCard(c)));
   $("playerScore").textContent = bj.ph.length ? "Сумма: " + handVal(bj.ph) : "";
 }
-
 function bjSetButtons(active){
   $("bjDeal").disabled   = active;
   $("bjHit").disabled    = !active;
   $("bjStand").disabled  = !active;
   $("bjDouble").disabled = !active;
 }
-
 function bjDeal(){
   const bet = parseInt($("bjBet").value) || 50;
   if(bet < 10){ setStatus("bjStatus","Минимальная ставка — 10","red"); return; }
   if(bet > state.balance){ setStatus("bjStatus","Мало денег!","red"); return; }
-
   addBalance(-bet);
   bj.bet = bet;
   bj.deck = newDeck();
@@ -767,10 +709,8 @@ function bjDeal(){
   bjUpdate();
   setStatus("bjStatus","Твой ход","gold");
   beep(700, 0.08, 0.12);
-
   if(handVal(bj.ph) === 21) bjFinish({natural:true});
 }
-
 function bjHit(){
   if(!bj.inGame) return;
   bj.ph.push(bj.deck.pop());
@@ -779,7 +719,6 @@ function bjHit(){
   beep(500, 0.05, 0.1);
   if(handVal(bj.ph) > 21) bjFinish({bust:true});
 }
-
 function bjStand(){
   if(!bj.inGame) return;
   bj.hidden = false;
@@ -787,7 +726,6 @@ function bjStand(){
   bjUpdate();
   bjFinish();
 }
-
 function bjDouble(){
   if(!bj.inGame) return;
   if(state.balance < bj.bet){ setStatus("bjStatus","Не хватает на удвоение","red"); return; }
@@ -801,14 +739,12 @@ function bjDouble(){
   bjUpdate();
   bjFinish();
 }
-
 function bjFinish({bust=false, natural=false} = {}){
   bj.inGame = false;
   bj.hidden = false;
   bjSetButtons(false);
   bjUpdate();
   const pv = handVal(bj.ph), dv = handVal(bj.dh);
-
   if(bust){
     setStatus("bjStatus", `💥 Перебор (${pv}).  −${fmt(bj.bet)} ₽`, "red");
     sfx([[300,0.15],[200,0.25]]);
@@ -839,13 +775,11 @@ function bjFinish({bust=false, natural=false} = {}){
     beep(660, 0.12, 0.15);
   }
 }
-
 function setStatus(id, text, cls){
   const el = $(id);
   el.textContent = text;
   el.className = "status " + cls;
 }
-
 $("bjDeal").addEventListener("click", bjDeal);
 $("bjHit").addEventListener("click", bjHit);
 $("bjStand").addEventListener("click", bjStand);
@@ -872,26 +806,22 @@ function renderDie(el, value){
 }
 let diceRolling = false;
 let diceBetVal = 0;
-
 function diceAnim(ticks, cb){
   if(ticks <= 0){ cb(); return; }
   renderDie($("die1"), 1 + Math.floor(Math.random()*6));
   renderDie($("die2"), 1 + Math.floor(Math.random()*6));
   setTimeout(()=>diceAnim(ticks-1, cb), 70);
 }
-
 function rollDice(kind){
   if(diceRolling) return;
   const bet = parseInt($("diceBet").value) || 50;
   if(bet < 10){ setStatus("diceStatus","Минимум 10","red"); return; }
   if(bet > state.balance){ setStatus("diceStatus","Мало денег!","red"); return; }
-
   addBalance(-bet);
   diceBetVal = bet;
   diceRolling = true;
   setStatus("diceStatus","Бросаем...","gold");
   $("diceSum").textContent = "Сумма: —";
-
   diceAnim(12, ()=>{
     const x = 1 + Math.floor(Math.random()*6);
     const y = 1 + Math.floor(Math.random()*6);
@@ -899,12 +829,10 @@ function rollDice(kind){
     renderDie($("die1"), x);
     renderDie($("die2"), y);
     $("diceSum").textContent = "Сумма: " + s;
-
     let won = false, mult = 0;
     if(kind === "low"   && s < 7){ won = true; mult = 2; }
     if(kind === "seven" && s === 7){ won = true; mult = 5; }
     if(kind === "high"  && s > 7){ won = true; mult = 2; }
-
     if(won){
       const p = bet * mult;
       addBalance(p);
@@ -917,7 +845,6 @@ function rollDice(kind){
     diceRolling = false;
   });
 }
-
 $("betLow").addEventListener("click", ()=>rollDice("low"));
 $("betSeven").addEventListener("click", ()=>rollDice("seven"));
 $("betHigh").addEventListener("click", ()=>rollDice("high"));
@@ -925,7 +852,6 @@ $("betHigh").addEventListener("click", ()=>rollDice("high"));
 /* ==================== КЕЙСЫ ==================== */
 let currentCase = Object.keys(CASES)[0];
 let caseOpening = false;
-
 function buildCaseTabs(){
   const wrap = $("caseTabs");
   wrap.innerHTML = "";
@@ -943,7 +869,6 @@ function buildCaseTabs(){
     wrap.appendChild(b);
   });
 }
-
 function selectCase(){
   $("casePrice").textContent = "Цена: " + fmt(CASES[currentCase].price) + " ₽";
   $("caseName").textContent = "Нажми «Открыть»";
@@ -954,12 +879,10 @@ function selectCase(){
   $("caseCard").style.background = "var(--surface)";
   refreshCaseInv();
 }
-
 function refreshCaseInv(){
   const total = state.inventory.reduce((s,it)=>s+it.value,0);
   $("caseInv").textContent = `🎒 В инвентаре: ${state.inventory.length} · ${fmt(total)} ₽`;
 }
-
 function pickItem(items){
   const weights = items.map(it=>it[3]);
   const total = weights.reduce((a,b)=>a+b,0);
@@ -970,30 +893,20 @@ function pickItem(items){
   }
   return items[items.length - 1];
 }
-
 function caseOpen(instant){
   if(caseOpening) return;
   const data = CASES[currentCase];
   if(state.balance < data.price){ setStatus("caseStatus","Мало денег!","red"); return; }
-
   addBalance(-data.price);
   caseOpening = true;
   $("caseOpen").disabled = true;
   $("caseInstant").disabled = true;
   $("caseValue").textContent = "???";
-
-  if(instant){
-    caseFinish();
-    return;
-  }
-
+  if(instant){ caseFinish(); return; }
   const total = 22;
   let i = 0;
   function tick(){
-    if(i >= total){
-      caseFinish();
-      return;
-    }
+    if(i >= total){ caseFinish(); return; }
     const it = data.items[Math.floor(Math.random()*data.items.length)];
     $("caseName").textContent = it[0];
     $("caseName").style.color = RARITY_COLORS[it[2]];
@@ -1005,24 +918,20 @@ function caseOpen(instant){
   }
   tick();
 }
-
 function caseFinish(){
   const data = CASES[currentCase];
   const it = pickItem(data.items);
   const [name, value, rarity] = it;
-
   $("caseName").textContent = name;
   $("caseName").style.color = RARITY_COLORS[rarity];
   $("caseRarity").textContent = RARITY_RU[rarity].toUpperCase();
   $("caseRarity").style.color = RARITY_COLORS[rarity];
   $("caseValue").textContent = fmt(value) + " ₽";
   $("caseCard").style.background = RARITY_BG[rarity];
-
   state.inventory.push({name, value, rarity, stars:0});
   save();
   refreshCaseInv();
   refreshUpgInv();
-
   if(rarity === "legendary"){
     setStatus("caseStatus", `🔥 ДЖЕКПОТ! ${name}`,"gold");
     sfx([[660,0.13],[880,0.13],[1100,0.13],[1320,0.3]]);
@@ -1030,17 +939,15 @@ function caseFinish(){
     setStatus("caseStatus", `🎁 ${name} → в инвентарь`,"green");
     sfx([[880,0.1],[1180,0.15]]);
   }
-
   caseOpening = false;
   $("caseOpen").disabled = false;
   $("caseInstant").disabled = false;
 }
-
 $("caseOpen").addEventListener("click", ()=>caseOpen(false));
 $("caseInstant").addEventListener("click", ()=>caseOpen(true));
 
 /* ==================== УЛУЧШЕНИЕ ==================== */
-let upgMult = 2;
+let upgMult = 1.2;   // по умолчанию — 75% шанс
 let upgSelected = null;
 let upgSpinning = false;
 
@@ -1050,7 +957,8 @@ function buildMultRow(){
   MULTIPLIERS.forEach(m=>{
     const b = document.createElement("button");
     b.className = "mult-btn" + (m === upgMult ? " active" : "");
-    b.textContent = "×" + m;
+    b.textContent = "×" + fmtMult(m);
+    b.dataset.mult = m;
     b.addEventListener("click", ()=>{
       if(upgSpinning) return;
       upgMult = m;
@@ -1105,11 +1013,9 @@ function drawWheel(chance, angle){
   const svg = $("wheel");
   const cx = 100, cy = 100, r = 82;
   let html = "";
-
   html += `<circle cx="${cx}" cy="${cy}" r="${r+8}" fill="#232A3C"/>`;
   html += `<circle cx="${cx}" cy="${cy}" r="${r+3}" fill="#191E2D"/>`;
   html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#1C1528" stroke="#2E3750" stroke-width="2"/>`;
-
   if(chance > 0){
     const extent = Math.max(1, 360 * chance);
     const start = 90 - extent/2;
@@ -1120,7 +1026,6 @@ function drawWheel(chance, angle){
     const [sx, sy] = polar(start);
     const [ex, ey] = polar(start + extent);
     const largeArc = extent > 180 ? 1 : 0;
-
     html += `<path d="M ${cx} ${cy} L ${sx} ${sy} A ${r} ${r} 0 ${largeArc} 0 ${ex} ${ey} Z" fill="#1E8C48"/>`;
     const r2 = r - 8;
     function polar2(a){
@@ -1131,17 +1036,14 @@ function drawWheel(chance, angle){
     const [ex2, ey2] = polar2(start + extent);
     html += `<path d="M ${cx} ${cy} L ${sx2} ${sy2} A ${r2} ${r2} 0 ${largeArc} 0 ${ex2} ${ey2} Z" fill="#38D977"/>`;
   }
-
   html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#2E3750" stroke-width="2"/>`;
   html += `<circle cx="${cx}" cy="${cy}" r="12" fill="#FFCC33"/>`;
   html += `<circle cx="${cx}" cy="${cy}" r="5" fill="#29200A"/>`;
-
   const rad = angle * Math.PI / 180;
   const px = cx + (r - 8) * Math.cos(rad);
   const py = cy - (r - 8) * Math.sin(rad);
   html += `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="#FFCC33" stroke-width="3" stroke-linecap="round"/>`;
   html += `<polygon points="${cx-8},${cy-r-12} ${cx},${cy-r-2} ${cx+8},${cy-r-12}" fill="#FFCC33"/>`;
-
   svg.innerHTML = html;
 }
 
@@ -1151,10 +1053,25 @@ function doUpgrade(){
   const it = state.inventory[idx];
   if(!it) return;
 
-  const chance = (1 - HOUSE_EDGE) / upgMult;
-  const success = Math.random() < chance;
-  const extent = 360 * chance;
+  /* ------ ЛОГИКА СЕКРЕТНОГО БОНУСА ------ */
+  /* Счётчик увеличивается ТОЛЬКО на прокрутах с ×100.
+     Бонус срабатывает на каждом 5-м прокруте ИМЕННО с ×100. */
+  const isX100Spin = (upgMult === UPGRADE_BONUS_MULT);
+  let isBonus = false;
 
+  if(isX100Spin){
+    state.upgSpinCount = (state.upgSpinCount || 0) + 1;
+    isBonus = (state.upgSpinCount % UPGRADE_BONUS_EVERY === 0);
+  }
+
+  /* Если не бонус — обычный расчёт по house edge */
+  const effectiveMult = isBonus ? UPGRADE_BONUS_MULT : upgMult;
+  const chance = isBonus ? 1 : (1 - HOUSE_EDGE) / upgMult;
+  const success = isBonus ? true : Math.random() < chance;
+
+  save();
+
+  const extent = 360 * chance;
   let finalAngle;
   if(success){
     const half = extent / 2;
@@ -1169,6 +1086,7 @@ function doUpgrade(){
       finalAngle = (90 + startOff + Math.random()*(avail-6) + 7200) % 360;
     }
   }
+
   const startAngle = 90;
   let totalRot = (finalAngle - startAngle + 720) % 360 + 720;
 
@@ -1189,17 +1107,17 @@ function doUpgrade(){
     const p = Math.min(1, (t - t0)/duration);
     const eased = 1 - Math.pow(1 - p, 3);
     const cur = startAngle + totalRot * eased;
-    drawWheel((1 - HOUSE_EDGE) / upgMult, cur);
+    drawWheel(chance, cur);
     if(p < 1) requestAnimationFrame(frame);
     else{
       clearInterval(tickInterval);
-      finishUpgrade(idx, success);
+      finishUpgrade(idx, success, effectiveMult);
     }
   }
   requestAnimationFrame(frame);
 }
 
-function finishUpgrade(idx, success){
+function finishUpgrade(idx, success, mult){
   const it = state.inventory[idx];
   if(!it){
     upgSpinning = false;
@@ -1207,7 +1125,7 @@ function finishUpgrade(idx, success){
     return;
   }
   if(success){
-    const nv = Math.floor(it.value * upgMult);
+    const nv = Math.floor(it.value * mult);
     it.value = nv;
     it.rarity = valueToRarity(nv);
     it.stars = (it.stars || 0) + 1;
@@ -1243,7 +1161,6 @@ $("sellSelected").addEventListener("click", ()=>{
   refreshCaseInv();
   beep(1200, 0.1, 0.15);
 });
-
 $("sellAll").addEventListener("click", ()=>{
   if(state.inventory.length === 0) return;
   const total = state.inventory.reduce((s,it)=>s+it.value,0);
@@ -1276,7 +1193,6 @@ function init(){
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
 document.addEventListener("click", ()=>ensureAudio(), {once:true});
 </script>
 </body>
