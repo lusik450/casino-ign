@@ -166,7 +166,6 @@
   }
   .dice-sum{text-align:center; font-size:22px; font-weight:800; color:var(--green); padding:6px 0}
 
-  /* ---- CASES ---- */
   .case-tabs{display:flex; gap:5px; flex-wrap:wrap}
   .case-tab{
     flex:1 1 calc(33.333% - 4px);
@@ -179,6 +178,10 @@
   }
   .case-tab:hover{filter:brightness(1.15)}
   .case-tab.active{background:var(--gold-deep); color:#1A1400}
+  .case-tab.aura.active{
+    background:linear-gradient(135deg, #A659F2, #FFCC33);
+    color:#1A1400;
+  }
 
   .case-card{
     text-align:center; padding:22px 14px; background:var(--surface);
@@ -365,7 +368,7 @@
 
   <!-- UPGRADE -->
   <div class="screen" id="screen-upgrade">
-    <div class="title-row">🔧  УЛУЧШЕНИЕ</div>
+    <div class="title-row">🔧  Абгрейдер</div>
     <div class="wheel-wrap">
       <svg class="wheel" id="wheel" viewBox="0 0 200 200"></svg>
     </div>
@@ -512,6 +515,15 @@ const CASES = {
     ["Экскалибур",400000,"rare",       5],
     ["Око",     1000000, "epic",     1.7],
     ["Корона",  5000000, "legendary",0.3],
+  ]},
+  "Аура": { price:2000000, items:[
+    ["Палка",     100000, "common",    75],
+    ["Камень",    300000, "common",    75],
+    ["Костет",   500000, "uncommon",  75],
+    ["Булава",    700000, "rare",      75],
+    ["Глок",   1500000, "epic",     30],
+    ["FPV DRON",    500000000, "legendary",1],
+    ["AK-47",    50000000, "legendary",5],
   ]},
 };
 
@@ -958,6 +970,7 @@ function buildCaseTabs(){
   Object.keys(CASES).forEach(name=>{
     const b = document.createElement("button");
     b.className = "case-tab" + (name === currentCase ? " active" : "");
+    if(name === "Аура") b.classList.add("aura");
     b.textContent = name;
     b.addEventListener("click", ()=>{
       if(caseOpening) return;
@@ -1018,7 +1031,11 @@ function selectCase(){
   $("caseValue").textContent = "";
   $("caseResults").innerHTML = "";
   setStatus("caseStatus","","dim");
-  $("caseCard").style.background = "var(--surface)";
+  if(currentCase === "Аура"){
+    $("caseCard").style.background = "linear-gradient(135deg, #251538, #332706)";
+  }else{
+    $("caseCard").style.background = "var(--surface)";
+  }
   refreshCaseInv();
   updateTotalPrice();
 }
