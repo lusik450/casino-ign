@@ -166,6 +166,61 @@
   }
   .dice-sum{text-align:center; font-size:22px; font-weight:800; color:var(--green); padding:6px 0}
 
+  .tap-wrap{
+    display:flex; flex-direction:column; align-items:center;
+    gap:12px; padding:8px 0; position:relative;
+  }
+  .tap-coin{
+    width:200px; height:200px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #FFE680, #D99A00 70%, #8A6200);
+    border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:80px; font-weight:800; color:#3D2800;
+    box-shadow:
+      0 10px 30px rgba(255,204,51,0.35),
+      inset 0 -8px 20px rgba(0,0,0,0.25),
+      inset 0 8px 20px rgba(255,255,255,0.25);
+    transition:transform .07s, box-shadow .1s;
+    user-select:none; -webkit-user-select:none;
+    position:relative; overflow:hidden;
+  }
+  .tap-coin:active{
+    transform:scale(0.94);
+    box-shadow:
+      0 4px 12px rgba(255,204,51,0.35),
+      inset 0 -6px 16px rgba(0,0,0,0.3),
+      inset 0 6px 16px rgba(255,255,255,0.15);
+  }
+  .tap-coin .emoji{filter:drop-shadow(0 2px 3px rgba(0,0,0,0.3))}
+
+  .tap-stats{
+    display:flex; gap:8px; width:100%;
+  }
+  .tap-stat{
+    flex:1; background:var(--surface2); border:1px solid var(--surface3);
+    border-radius:10px; padding:10px; text-align:center;
+  }
+  .tap-stat .label{
+    font-size:11px; color:var(--text-dim); font-weight:600;
+    text-transform:uppercase; letter-spacing:.5px;
+  }
+  .tap-stat .value{
+    font-size:20px; font-weight:800; color:var(--gold); margin-top:2px;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .tap-float{
+    position:absolute; pointer-events:none;
+    color:#5CFF8F; font-weight:800; font-size:22px;
+    text-shadow:0 2px 4px rgba(0,0,0,0.5);
+    animation:floatUp .8s ease-out forwards;
+    z-index:10;
+  }
+  @keyframes floatUp{
+    0%   { opacity:1; transform:translate(-50%, 0)     scale(1); }
+    100% { opacity:0; transform:translate(-50%, -80px) scale(1.4); }
+  }
+
   .case-tabs{display:flex; gap:5px; flex-wrap:wrap}
   .case-tab{
     flex:1 1 calc(33.333% - 4px);
@@ -260,7 +315,7 @@
   .mult-btn.active{background:var(--gold-deep); color:#1A1400}
 
   .tabbar{
-    display:grid; grid-template-columns:repeat(5,1fr);
+    display:grid; grid-template-columns:repeat(6,1fr);
     background:#0E1220; flex-shrink:0; padding-bottom:env(safe-area-inset-bottom);
   }
   .tab{
@@ -313,6 +368,43 @@
       <button class="btn green" id="bjHit" disabled>Взять</button>
       <button class="btn red"   id="bjStand" disabled>Хватит</button>
       <button class="btn purple" id="bjDouble" disabled>×2</button>
+    </div>
+  </div>
+
+  <!-- TAP -->
+  <div class="screen" id="screen-tap">
+    <div class="title-row">👆  ТАПАЙ ДЕНЬГИ</div>
+
+    <div class="card" style="padding:20px 14px">
+      <div class="tap-wrap">
+        <button class="tap-coin" id="tapCoin" aria-label="Тап">
+          <span class="emoji">💰</span>
+        </button>
+        <div class="status green" id="tapStatus" style="font-size:13px; min-height:0; padding:4px">
+          Жми на монету — 1 клик = 1 ₽
+        </div>
+      </div>
+    </div>
+
+    <div class="tap-stats">
+      <div class="tap-stat">
+        <div class="label">Тапнуто раз</div>
+        <div class="value" id="tapCount">0</div>
+      </div>
+      <div class="tap-stat">
+        <div class="label">Заработано</div>
+        <div class="value" id="tapEarned">0 ₽</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr"><span class="accent-blue"></span><span style="color:var(--blue)">ℹ️ Как это работает</span></div>
+      <div style="font-size:12px; color:var(--text-dim); line-height:1.7">
+        • Каждый тап — <b style="color:var(--gold)">+1 ₽</b> на баланс<br>
+        • Никаких ограничений — тапай сколько хочешь<br>
+        • Счётчик сохраняется, даже если закрыть сайт<br>
+        • Работает и с тачскрина, и с мыши
+      </div>
     </div>
   </div>
 
@@ -401,13 +493,13 @@
     </button>
     <div class="status gold" id="promoStatus"></div>
     <div class="cooldown-box" id="promoCooldownBox" style="display:none">
-      <div class="cooldown-time" id="promoCooldownTime">03:00</div>
+      <div class="cooldown-time" id="promoCooldownTime">10:00</div>
       <div class="cooldown-label">⏳ Следующий промокод доступен через</div>
     </div>
     <div class="card">
       <div class="card-hdr"><span class="accent-blue"></span><span style="color:var(--blue)">ℹ️ Как это работает</span></div>
       <div style="font-size:12px; color:var(--text-dim); line-height:1.7">
-        • Один промокод можно вводить <b style="color:var(--gold)">раз в 3 минуты</b><br>
+        • Один промокод можно вводить <b style="color:var(--gold)">раз в 10 минут</b><br>
         • Таймер сохраняется, даже если закрыть сайт<br>
         • Коды могут выдавать деньги или другие бонусы<br>
         • Неверный код — попробуй другой
@@ -419,6 +511,7 @@
 
 <div class="tabbar">
   <button class="tab active" data-screen="blackjack"><span class="emoji">🃏</span>Блэкджек</button>
+  <button class="tab" data-screen="tap"><span class="emoji">👆</span>Тапать</button>
   <button class="tab" data-screen="dice"><span class="emoji">🎲</span>Кости</button>
   <button class="tab" data-screen="cases"><span class="emoji">📦</span>Кейсы</button>
   <button class="tab" data-screen="upgrade"><span class="emoji">🔧</span>Абгрейдер</button>
@@ -436,7 +529,9 @@ const MULTIPLIERS = [1.2, 2, 3, 5, 10, 25, 100];
 const UPGRADE_BONUS_EVERY = 5;
 const UPGRADE_BONUS_MULT  = 100;
 
-const PROMO_COOLDOWN_MS = 3 * 60 * 1000;
+/* ---- Промокод: раз в 10 минут ---- */
+const PROMO_COOLDOWN_MS = 10 * 60 * 1000;
+
 const PROMO_CODES = {
   "666": { reward: 1000,     message: "Дьявольский бонус!" },
   "ПЁС": { reward: 10000000, message: "Собачий джекпот!" },
@@ -444,6 +539,9 @@ const PROMO_CODES = {
 };
 
 const CASE_COUNTS = [1, 2, 3, 5, 10];
+
+/* ---- Тапать ---- */
+const TAP_REWARD = 1;
 
 const RARITY_COLORS = {
   common:"#A0A6B8", uncommon:"#38D977", rare:"#529EFF",
@@ -553,6 +651,8 @@ const state = {
   promoLastUse: 0,
   upgSpinCount: 0,
   caseCount: 1,
+  tapCount: 0,
+  tapEarned: 0,
 };
 
 function save(){
@@ -564,6 +664,8 @@ function save(){
       promoLastUse: state.promoLastUse,
       upgSpinCount: state.upgSpinCount,
       caseCount: state.caseCount,
+      tapCount: state.tapCount,
+      tapEarned: state.tapEarned,
     }));
   }catch(e){}
 }
@@ -578,6 +680,8 @@ function load(){
     if(typeof d.promoLastUse === "number") state.promoLastUse = d.promoLastUse;
     if(typeof d.upgSpinCount === "number") state.upgSpinCount = d.upgSpinCount;
     if(typeof d.caseCount === "number") state.caseCount = d.caseCount;
+    if(typeof d.tapCount === "number") state.tapCount = d.tapCount;
+    if(typeof d.tapEarned === "number") state.tapEarned = d.tapEarned;
   }catch(e){}
 }
 
@@ -651,6 +755,7 @@ document.querySelectorAll(".tab").forEach(btn=>{
     if(btn.dataset.screen === "upgrade") refreshUpgInv();
     if(btn.dataset.screen === "cases") refreshCaseInv();
     if(btn.dataset.screen === "promo") refreshPromoUI();
+    if(btn.dataset.screen === "tap") refreshTapStats();
   });
 });
 
@@ -662,6 +767,54 @@ $("soundBtn").addEventListener("click", ()=>{
   save();
   if(state.soundOn) beep(880, 0.08, 0.15);
 });
+
+/* ==================== ТАПАТЬ ==================== */
+function refreshTapStats(){
+  $("tapCount").textContent = fmt(state.tapCount || 0);
+  $("tapEarned").textContent = fmt(state.tapEarned || 0) + " ₽";
+}
+
+function doTap(e){
+  state.balance += TAP_REWARD;
+  state.tapCount = (state.tapCount || 0) + 1;
+  state.tapEarned = (state.tapEarned || 0) + TAP_REWARD;
+  save();
+  refreshBalance();
+  refreshTapStats();
+
+  beep(1200 + Math.random()*200, 0.04, 0.08);
+
+  const coin = $("tapCoin");
+  const rect = coin.getBoundingClientRect();
+  const wrap = coin.parentElement;
+  const wrapRect = wrap.getBoundingClientRect();
+
+  const floater = document.createElement("div");
+  floater.className = "tap-float";
+  floater.textContent = "+" + TAP_REWARD;
+
+  let x, y;
+  if(e && typeof e.clientX === "number" && e.clientX > 0){
+    x = e.clientX - wrapRect.left;
+    y = e.clientY - wrapRect.top;
+  }else{
+    x = rect.left - wrapRect.left + rect.width/2;
+    y = rect.top - wrapRect.top + rect.height/2;
+  }
+  floater.style.left = x + "px";
+  floater.style.top  = y + "px";
+  wrap.style.position = "relative";
+  wrap.appendChild(floater);
+
+  setTimeout(()=>{ floater.remove(); }, 900);
+}
+
+(function initTap(){
+  const btn = $("tapCoin");
+  if(!btn) return;
+  btn.addEventListener("click", doTap);
+  btn.addEventListener("touchstart", (e)=>{ e.preventDefault(); doTap(e.touches[0] || e); }, {passive:false});
+})();
 
 /* ==================== ПРОМОКОД ==================== */
 function promoRemainingMs(){
@@ -1056,7 +1209,6 @@ function pickItem(items){
   return items[items.length - 1];
 }
 
-/* ==================== ОТКРЫТИЕ КЕЙСОВ ==================== */
 function caseOpen(instant){
   if(caseOpening) return;
   const data = CASES[currentCase];
@@ -1074,23 +1226,19 @@ function caseOpen(instant){
   $("caseValue").textContent = "???";
   $("caseTotalPrice").innerHTML = "";
 
-  // Определяем результат сразу
   const results = [];
   for(let k=0;k<count;k++){
     results.push(pickItem(data.items));
   }
 
-  // ⚡ МГНОВЕННО — сразу показываем результат, независимо от count
   if(instant){
     caseFinish(results);
     return;
   }
 
-  // Обычная анимация
   setStatus("caseStatus", `Открываем ${count} ${plural(count, "кейс","кейса","кейсов")}...`, "gold");
 
   if(count === 1){
-    // Одиночное открытие — длинная прокрутка
     const total = 22;
     let i = 0;
     function tick(){
@@ -1106,7 +1254,6 @@ function caseOpen(instant){
     }
     tick();
   }else{
-    // Мульти-открытие — короткая прокрутка
     caseAnimMulti(results);
   }
 }
@@ -1443,6 +1590,7 @@ function init(){
   drawWheel(0, 90);
   renderDie($("die1"), 1);
   renderDie($("die2"), 1);
+  refreshTapStats();
   $("soundBtn").textContent = state.soundOn ? "🔊" : "🔇";
   $("soundBtn").classList.toggle("off", !state.soundOn);
   bjUpdate();
