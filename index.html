@@ -149,7 +149,7 @@
     border-radius:10px; padding:14px; text-align:center;
   }
   .cooldown-time{
-    font-size:26px; font-weight:800; color:var(--gold);
+    font-size:24px; font-weight:800; color:var(--gold);
     font-variant-numeric:tabular-nums; letter-spacing:1px;
   }
   .cooldown-label{font-size:12px; color:var(--text-dim); margin-top:4px}
@@ -493,13 +493,13 @@
     </button>
     <div class="status gold" id="promoStatus"></div>
     <div class="cooldown-box" id="promoCooldownBox" style="display:none">
-      <div class="cooldown-time" id="promoCooldownTime">10:00</div>
+      <div class="cooldown-time" id="promoCooldownTime">05:00:00</div>
       <div class="cooldown-label">⏳ Следующий промокод доступен через</div>
     </div>
     <div class="card">
       <div class="card-hdr"><span class="accent-blue"></span><span style="color:var(--blue)">ℹ️ Как это работает</span></div>
       <div style="font-size:12px; color:var(--text-dim); line-height:1.7">
-        • Один промокод можно вводить <b style="color:var(--gold)">раз в 10 минут</b><br>
+        • Один промокод можно вводить <b style="color:var(--gold)">раз в 5 часов</b><br>
         • Таймер сохраняется, даже если закрыть сайт<br>
         • Коды могут выдавать деньги или другие бонусы<br>
         • Неверный код — попробуй другой
@@ -529,8 +529,8 @@ const MULTIPLIERS = [1.2, 2, 3, 5, 10, 25, 100];
 const UPGRADE_BONUS_EVERY = 5;
 const UPGRADE_BONUS_MULT  = 100;
 
-/* ---- Промокод: раз в 10 минут ---- */
-const PROMO_COOLDOWN_MS = 10 * 60 * 1000;
+/* ---- Промокод: раз в 5 часов ---- */
+const PROMO_COOLDOWN_MS = 5 * 60 * 60 * 1000;
 
 const PROMO_CODES = {
   "666": { reward: 1000,     message: "Дьявольский бонус!" },
@@ -822,11 +822,12 @@ function promoRemainingMs(){
   const left = PROMO_COOLDOWN_MS - elapsed;
   return left > 0 ? left : 0;
 }
-function formatMMSS(ms){
+function formatHMS(ms){
   const total = Math.ceil(ms / 1000);
-  const m = String(Math.floor(total / 60)).padStart(2, "0");
+  const h = String(Math.floor(total / 3600)).padStart(2, "0");
+  const m = String(Math.floor((total % 3600) / 60)).padStart(2, "0");
   const s = String(total % 60).padStart(2, "0");
-  return m + ":" + s;
+  return h + ":" + m + ":" + s;
 }
 let promoInterval = null;
 function refreshPromoUI(){
@@ -840,7 +841,7 @@ function refreshPromoUI(){
     input.disabled = true;
     btn.disabled = true;
     cdBox.style.display = "";
-    cdTime.textContent = formatMMSS(left);
+    cdTime.textContent = formatHMS(left);
     if(!promoInterval){
       promoInterval = setInterval(()=>{
         const l = promoRemainingMs();
@@ -849,7 +850,7 @@ function refreshPromoUI(){
           promoInterval = null;
           refreshPromoUI();
         }else{
-          cdTime.textContent = formatMMSS(l);
+          cdTime.textContent = formatHMS(l);
         }
       }, 500);
     }
@@ -866,7 +867,7 @@ function refreshPromoUI(){
 function usePromo(){
   const left = promoRemainingMs();
   if(left > 0){
-    setStatus("promoStatus", `⏳ Подожди ещё ${formatMMSS(left)}`, "red");
+    setStatus("promoStatus", `⏳ Подожди ещё ${formatHMS(left)}`, "red");
     return;
   }
   const raw = $("promoInput").value.trim().toUpperCase();
