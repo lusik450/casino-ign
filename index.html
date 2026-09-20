@@ -554,15 +554,192 @@
     line-height:1.15;
     margin:0 auto;
   }
+  .case-tab .case-tab-price{
+    display:block;
+    font-size:11px;
+    font-weight:800;
+    color:var(--gold);
+    margin-top:2px;
+    opacity:.95;
+    text-shadow:0 1px 3px rgba(0,0,0,.75);
+  }
+  .case-tab.aura .case-tab-price{
+    color:#FFE680;
+    text-shadow:0 1px 4px rgba(0,0,0,.9);
+  }
+  .case-tab.aura:hover .case-tab-price,
+  .case-tab.aura:focus-visible .case-tab-price,
+  .case-tab.aura.active .case-tab-price{
+    color:#1A1400;
+    text-shadow:none;
+  }
+  .case-tab.active:not(.aura) .case-tab-price{color:var(--gold);}
   @media (max-width:700px){
     .case-tabs{gap:6px 8px;}
     .case-tab{padding:1px 1px 5px;font-size:12px;}
     .case-tab::before,.case-tab.aura::before{height:78px;}
     .case-tab.aura::before{line-height:78px;}
   }
+
+  /* ===== CSS-эффекты ===== */
+  @keyframes pulseGold{
+    0%,100%{ box-shadow:0 0 0 0 rgba(255,204,51,0); transform:scale(1); }
+    50%{ box-shadow:0 0 28px 4px rgba(255,204,51,.45); transform:scale(1.02); }
+  }
+  @keyframes pulseWin{
+    0%,100%{ box-shadow:0 0 0 0 rgba(56,217,119,0); }
+    50%{ box-shadow:0 0 22px 3px rgba(56,217,119,.4); }
+  }
+  @keyframes shakeLose{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-6px); }
+    40%{ transform:translateX(6px); }
+    60%{ transform:translateX(-4px); }
+    80%{ transform:translateX(4px); }
+  }
+  @keyframes popIn{
+    0%{ opacity:0; transform:scale(.6); }
+    70%{ opacity:1; transform:scale(1.08); }
+    100%{ opacity:1; transform:scale(1); }
+  }
+  @keyframes balancePop{
+    0%{ transform:scale(1); }
+    40%{ transform:scale(1.12); }
+    100%{ transform:scale(1); }
+  }
+  @keyframes spinGlow{
+    0%{ filter:drop-shadow(0 0 2px rgba(255,204,51,.2)); }
+    50%{ filter:drop-shadow(0 0 14px rgba(255,204,51,.65)); }
+    100%{ filter:drop-shadow(0 0 2px rgba(255,204,51,.2)); }
+  }
+  @keyframes rarityFlash{
+    0%{ filter:brightness(1); }
+    30%{ filter:brightness(1.55); }
+    100%{ filter:brightness(1); }
+  }
+  @keyframes resultSlide{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .case-card{ transition: background .35s ease, box-shadow .3s ease; }
+  .case-card.fx-legendary{ animation: pulseGold 1.1s ease-in-out 2; }
+  .case-card.fx-win{ animation: pulseWin .9s ease-in-out 1; }
+  .case-card.fx-reveal .case-name{ animation: popIn .45s cubic-bezier(.22,1.2,.36,1) both; }
+  .case-card.fx-reveal .case-value{ animation: popIn .5s .08s cubic-bezier(.22,1.2,.36,1) both; }
+  .case-card.fx-reveal .case-rarity{ animation: rarityFlash .6s ease-out both; }
+
+  .results-list .result-item{ animation: resultSlide .35s ease both; }
+  .results-list .result-item:nth-child(1){ animation-delay:.02s }
+  .results-list .result-item:nth-child(2){ animation-delay:.06s }
+  .results-list .result-item:nth-child(3){ animation-delay:.10s }
+  .results-list .result-item:nth-child(4){ animation-delay:.14s }
+  .results-list .result-item:nth-child(5){ animation-delay:.18s }
+  .results-list .result-item:nth-child(n+6){ animation-delay:.22s }
+
+  .pill.fx-pop{ animation: balancePop .45s ease; }
+  .pill.win.fx-pop{ animation: balancePop .45s ease; }
+  .pill.lose.fx-pop{ animation: balancePop .45s ease, shakeLose .4s ease; }
+
+  .wheel.fx-spinning{ animation: spinGlow 1s ease-in-out infinite; }
+  .status.fx-success{ animation: popIn .4s ease; }
+  .status.fx-fail{ animation: shakeLose .45s ease; }
+
+  .case-tab:active{ transform: scale(.97); }
+  .case-name.fx-roll{ animation: rarityFlash .12s linear infinite; }
+
+  /* ===== ГЛАВНОЕ МЕНЮ ===== */
+  #mainMenu{
+    position:fixed; inset:0; z-index:500;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(255,204,51,.12), transparent 55%),
+      radial-gradient(ellipse at 80% 80%, rgba(166,89,242,.15), transparent 50%),
+      radial-gradient(ellipse at 15% 70%, rgba(56,217,119,.08), transparent 45%),
+      var(--bg);
+    transition: opacity .55s ease, transform .55s ease, visibility .55s;
+  }
+  #mainMenu.hiding{
+    opacity:0;
+    transform:scale(1.06);
+    visibility:hidden;
+    pointer-events:none;
+  }
+  #mainMenu.gone{ display:none; }
+  .menu-logo{
+    font-size:56px; line-height:1; margin-bottom:10px;
+    filter:drop-shadow(0 6px 18px rgba(255,204,51,.35));
+    animation: menuFloat 3s ease-in-out infinite;
+  }
+  @keyframes menuFloat{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-10px); }
+  }
+  .menu-title{
+    font-size:28px; font-weight:900; letter-spacing:4px;
+    color:var(--gold); text-align:center;
+    text-shadow:0 0 24px rgba(255,204,51,.35);
+    margin-bottom:8px;
+  }
+  .menu-sub{
+    font-size:13px; color:var(--text-dim); text-align:center;
+    max-width:300px; line-height:1.55; margin-bottom:28px;
+    padding:0 20px;
+  }
+  .menu-sub b{ color:var(--gold); font-weight:700; }
+  .menu-play{
+    background:linear-gradient(135deg, #FFCC33, #D99A00);
+    color:#1A1400; border:none;
+    padding:16px 48px; border-radius:14px;
+    font-size:18px; font-weight:900; letter-spacing:2px;
+    font-family:inherit; cursor:pointer;
+    box-shadow:0 8px 28px rgba(255,204,51,.35), inset 0 1px 0 rgba(255,255,255,.25);
+    transition: transform .15s, box-shadow .2s, filter .15s;
+    animation: menuPulse 2s ease-in-out infinite;
+  }
+  .menu-play:hover{ filter:brightness(1.08); transform:translateY(-2px); }
+  .menu-play:active{ transform:scale(.97); }
+  @keyframes menuPulse{
+    0%,100%{ box-shadow:0 8px 28px rgba(255,204,51,.3); }
+    50%{ box-shadow:0 8px 36px rgba(255,204,51,.55); }
+  }
+  .menu-hint{
+    margin-top:18px; font-size:11px; color:var(--text-dim);
+    opacity:.7; letter-spacing:.5px;
+  }
+  body.menu-open .topbar,
+  body.menu-open .tabbar,
+  body.menu-open .content{
+    opacity:0;
+    pointer-events:none;
+  }
+  body:not(.menu-open) .topbar,
+  body:not(.menu-open) .tabbar,
+  body:not(.menu-open) .content{
+    animation: gameEnter .55s ease both;
+  }
+  @keyframes gameEnter{
+    from{ opacity:0; transform:translateY(12px); }
+    to{ opacity:1; transform:none; }
+  }
+  .topbar, .tabbar, .content{
+    transition: opacity .4s ease;
+  }
 </style>
 </head>
-<body>
+<body class="menu-open">
+
+<div id="mainMenu">
+  <div class="menu-logo">🎰</div>
+  <div class="menu-title">CASINO</div>
+  <div class="menu-sub">
+    Добро пожаловать в онлайн-казино.<br>
+    Открывай <b>кейсы</b>, крути <b>апгрейд</b>, играй в <b>блэкджек</b> и <b>кости</b>.<br>
+    Удача любит смелых — попробуй выбить легендарку.
+  </div>
+  <button class="menu-play" id="playBtn" type="button">ИГРАТЬ</button>
+  <div class="menu-hint">18+ · только для развлечения</div>
+</div>
 
 <div class="topbar">
   <span class="logo">🎰 C A S I N O</span>
@@ -705,7 +882,10 @@
     <div class="status gold" id="upgSelected">Выбери предмет</div>
     <div class="mult-row" id="multRow"></div>
     <div class="status green" id="upgChance"></div>
-    <button class="btn purple" id="upgBtn" disabled style="padding:14px; font-size:14px">УЛУЧШИТЬ</button>
+    <div class="btn-row" style="margin-top:4px">
+      <button class="btn purple" id="upgBtn" disabled style="padding:14px; font-size:14px">УЛУЧШИТЬ</button>
+      <button class="btn gold" id="upgInstant" disabled style="padding:14px; font-size:14px">⚡ МГНОВЕННО</button>
+    </div>
     <div class="status gold" id="upgStatus"></div>
     <div class="card-hdr" style="margin-top:6px"><span class="accent-blue"></span><span style="color:var(--blue)">🎒 Инвентарь</span></div>
     <div class="inv-list" id="upgInv"></div>
@@ -833,69 +1013,69 @@ const RARITY_RU = {
 /* ==================== КЕЙСЫ ==================== */
 const CASES = {
   "Дерево": { price:25, items:[
-    ["Деревянный кинжал",   5, "common",    43.85],
+    ["Деревянный кинжал",   5, "common",    42.5],
     ["Дубовый щит",        10, "common",    27.5],
     ["Кожаный доспех",     25, "uncommon",  15.5],
     ["Железный меч",       50, "rare",      7.5],
     ["Серебряный амулет", 150, "epic",       4.35],
-    ["Золотой перстень",  600, "legendary",  1.30],
+    ["Золотой перстень",  600, "legendary",  2.65],
   ]},
   "Бронза": { price:100, items:[
-    ["Бронзовый кинжал",    20, "common",    43.85],
+    ["Бронзовый кинжал",    20, "common",    42.5],
     ["Круглый щит",         50, "common",    27.5],
     ["Боевой топор",       100, "uncommon",  15.5],
     ["Стальной клинок",    200, "rare",      7.5],
     ["Рунический камень",  500, "epic",       4.35],
-    ["Бронзовая корона",  2000, "legendary",  1.30],
+    ["Бронзовая корона",  2000, "legendary",  2.65],
   ]},
   "Серебро": { price:500, items:[
-    ["Серебряный кинжал",   100, "common",    43.85],
+    ["Серебряный кинжал",   100, "common",    42.5],
     ["Рыцарский щит",       250, "common",    27.5],
     ["Двуручный топор",     500, "uncommon",  15.5],
     ["Клинок стража",      1000, "rare",      7.5],
     ["Сфера луны",         2500, "epic",       4.35],
-    ["Серебряная корона", 10000, "legendary",  1.30],
+    ["Серебряная корона", 10000, "legendary",  2.65],
   ]},
   "Золото": { price:2000, items:[
-    ["Золотой кинжал",      500, "common",    43.85],
+    ["Золотой кинжал",      500, "common",    42.5],
     ["Щит солнца",         1000, "common",    27.5],
     ["Секира героя",       2000, "uncommon",  15.5],
     ["Меч Экскалибур",     4000, "rare",      7.5],
     ["Око дракона",       10000, "epic",       4.35],
-    ["Золотая корона",    40000, "legendary",  1.30],
+    ["Золотая корона",    40000, "legendary",  2.65],
   ]},
   "Платина": { price:10000, items:[
-    ["Платиновый кинжал",   2500, "common",    43.85],
+    ["Платиновый кинжал",   2500, "common",    42.5],
     ["Щит титана",          5000, "common",    27.5],
     ["Секира бури",        10000, "uncommon",  15.5],
     ["Клинок вечности",    20000, "rare",      7.5],
     ["Кристалл души",      50000, "epic",       4.35],
-    ["Платиновая корона", 200000, "legendary",  1.30],
+    ["Платиновая корона", 200000, "legendary",  2.65],
   ]},
   "Алмаз": { price:50000, items:[
-    ["Алмазный кинжал",    12000, "common",    43.85],
+    ["Алмазный кинжал",    12000, "common",    42.5],
     ["Щит бездны",         25000, "common",    27.5],
     ["Секира хаоса",       50000, "uncommon",  15.5],
     ["Меч звёзд",         100000, "rare",      7.5],
     ["Сердце феникса",    250000, "epic",       4.35],
-    ["Алмазная корона",  1000000, "legendary",  1.30],
+    ["Алмазная корона",  1000000, "legendary",  2.65],
   ]},
   "Легенда": { price:200000, items:[
-    ["Кинжал богов",       50000, "common",    43.85],
+    ["Кинжал богов",       50000, "common",    42.5],
     ["Щит Олимпа",        100000, "common",    27.5],
     ["Секира Рагнарёка",  200000, "uncommon",  15.5],
     ["Меч судьбы",        400000, "rare",      7.5],
     ["Слёза вечности",   1000000, "epic",       4.35],
-    ["Корона императора",5000000, "legendary",  1.30],
+    ["Корона императора",5000000, "legendary",  2.65],
   ]},
   "Аура": { price:2000000, items:[
-    ["Палка",     100000, "common",    50],
-    ["Камень",    300000, "common",    50],
+    ["Палка",     100000, "common",    40],
+    ["Камень",    300000, "common",    35],
     ["Костет",   500000, "uncommon",  50],
     ["Булава",    700000, "rare",      50],
-    ["Глок",   1500000, "epic",      50],
-    ["FPV DRON",    500000000, "legendary",1],
-    ["AK-47",    50000000, "legendary",2],
+    ["Глок",   1500000, "epic",      40],
+    ["FPV DRON",    500000000, "legendary",8],
+    ["AK-47",    50000000, "legendary",15],
   ]},
 };
 
@@ -1005,9 +1185,10 @@ function refreshBalance(){
   const old = pill.textContent;
   pill.textContent = "💰 " + fmt(state.balance) + " ₽";
   if(old !== pill.textContent){
-    pill.classList.remove("win","lose");
-    pill.classList.add("win");
-    setTimeout(()=>pill.classList.remove("win","lose"), 400);
+    pill.classList.remove("win","lose","fx-pop");
+    void pill.offsetWidth;
+    pill.classList.add("win","fx-pop");
+    setTimeout(()=>pill.classList.remove("win","lose","fx-pop"), 450);
   }
 }
 function addBalance(d){
@@ -1443,6 +1624,12 @@ function buildCaseTabs(){
     label.textContent = name;
     b.appendChild(label);
 
+    const priceEl = document.createElement("span");
+    priceEl.className = "case-tab-price";
+    priceEl.textContent = fmt(CASES[name].price) + " ₽";
+    b.appendChild(priceEl);
+
+    b.dataset.caseName = name;
     b.addEventListener("click", ()=>openCaseView(name));
     wrap.appendChild(b);
   });
@@ -1453,7 +1640,7 @@ function openCaseView(name){
   currentCase = name;
   $("casePickerView").style.display = "none";
   $("caseDetailView").classList.add("open");
-  document.querySelectorAll(".case-tab").forEach(t=>t.classList.toggle("active", t.textContent === name));
+  document.querySelectorAll(".case-tab").forEach(t=>t.classList.toggle("active", t.dataset.caseName === name));
   selectCase();
 }
 
@@ -1591,6 +1778,7 @@ function caseOpen(instant){
       const it = data.items[Math.floor(Math.random()*data.items.length)];
       $("caseName").textContent = it[0];
       $("caseName").style.color = RARITY_COLORS[it[2]];
+      $("caseName").classList.add("fx-roll");
       $("caseCard").style.background = RARITY_BG[it[2]];
       beep(1000, 0.02, 0.05);
       const delay = 50 + i * 6;
@@ -1616,6 +1804,7 @@ function caseAnimMulti(results){
     const it = data.items[Math.floor(Math.random()*data.items.length)];
     $("caseName").textContent = it[0];
     $("caseName").style.color = RARITY_COLORS[it[2]];
+    $("caseName").classList.add("fx-roll");
     $("caseCard").style.background = RARITY_BG[it[2]];
     beep(1000, 0.02, 0.05);
     i++;
@@ -1625,6 +1814,7 @@ function caseAnimMulti(results){
 }
 
 function caseFinish(results){
+  $("caseName").classList.remove("fx-roll");
   const data = CASES[currentCase];
   const count = results.length;
 
@@ -1652,10 +1842,16 @@ function caseFinish(results){
     $("caseValue").textContent = fmt(value) + " ₽";
     $("caseCard").style.background = RARITY_BG[rarity];
 
+    const card = $("caseCard");
+    card.classList.remove("fx-legendary","fx-win","fx-reveal");
+    void card.offsetWidth;
+    card.classList.add("fx-reveal");
     if(rarity === "legendary"){
+      card.classList.add("fx-legendary");
       setStatus("caseStatus", `🔥 ДЖЕКПОТ! ${name}`,"gold");
       sfx([[660,0.13],[880,0.13],[1100,0.13],[1320,0.3]]);
     }else{
+      card.classList.add("fx-win");
       setStatus("caseStatus", `🎁 ${name} → в инвентарь`,"green");
       sfx([[880,0.1],[1180,0.15]]);
     }
@@ -1680,10 +1876,16 @@ function caseFinish(results){
     });
     wrap.appendChild(list);
 
+    const card = $("caseCard");
+    card.classList.remove("fx-legendary","fx-win","fx-reveal");
+    void card.offsetWidth;
+    card.classList.add("fx-reveal");
     if(hasLegendary){
+      card.classList.add("fx-legendary");
       setStatus("caseStatus", `🔥 Есть ЛЕГЕНДАРКА! Лучшее: ${best[0]} (${fmt(best[1])} ₽)`,"gold");
       sfx([[660,0.13],[880,0.13],[1100,0.13],[1320,0.3]]);
     }else{
+      card.classList.add("fx-win");
       setStatus("caseStatus", `🎁 Открыто ${count}, лучшее: ${best[0]} (${fmt(best[1])} ₽)`,"green");
       sfx([[880,0.1],[1180,0.15]]);
     }
@@ -1703,6 +1905,7 @@ $("caseInstant").addEventListener("click", ()=>caseOpen(true));
 let upgMult = 1.2;
 let upgSelected = null;
 let upgSpinning = false;
+let lastWheelAngle = 90;
 
 function buildMultRow(){
   const wrap = $("multRow");
@@ -1715,6 +1918,8 @@ function buildMultRow(){
     b.addEventListener("click", ()=>{
       if(upgSpinning) return;
       upgMult = m;
+      lastWheelAngle = 90;
+      _wheelLastChance = -1;
       document.querySelectorAll(".mult-btn").forEach(x=>x.classList.remove("active"));
       b.classList.add("active");
       upgUpdateChance();
@@ -1725,20 +1930,24 @@ function buildMultRow(){
 
 function refreshUpgInv(){
   const wrap = $("upgInv");
-  wrap.innerHTML = "";
+  const frag = document.createDocumentFragment();
   state.inventory.forEach((it, i)=>{
     const b = document.createElement("button");
     b.className = "inv-item rarity-" + it.rarity + (upgSelected === i ? " selected" : "");
-    const stars = " ✦".repeat(it.stars || 0);
+    const stars = it.stars ? " ✦".repeat(it.stars) : "";
     b.textContent = `${it.name}${stars}  ·  ${fmt(it.value)} ₽  [${RARITY_RU[it.rarity]}]`;
     b.addEventListener("click", ()=>{
       if(upgSpinning) return;
       upgSelected = i;
+      lastWheelAngle = 90;
+      _wheelLastChance = -1;
       refreshUpgInv();
       upgUpdateChance();
     });
-    wrap.appendChild(b);
+    frag.appendChild(b);
   });
+  wrap.innerHTML = "";
+  wrap.appendChild(frag);
   if(upgSelected !== null && upgSelected >= state.inventory.length){
     upgSelected = null;
   }
@@ -1750,6 +1959,8 @@ function upgUpdateChance(){
     $("upgSelected").textContent = "Выбери предмет";
     $("upgChance").textContent = "";
     $("upgBtn").disabled = true;
+    $("upgInstant").disabled = true;
+    lastWheelAngle = 90;
     drawWheel(0, 90);
     return;
   }
@@ -1759,15 +1970,19 @@ function upgUpdateChance(){
   $("upgSelected").textContent = `${it.name} · ${fmt(it.value)} ₽`;
   $("upgChance").textContent = `Шанс: ${(chance*100).toFixed(2)}%   →   ~${fmt(target)} ₽`;
   $("upgBtn").disabled = upgSpinning;
-  drawWheel(chance, 90);
+  $("upgInstant").disabled = upgSpinning;
+  drawWheel(chance, lastWheelAngle);
 }
 
-function drawWheel(chance, angle){
+let _wheelBuilt = false;
+let _wheelLastChance = -1;
+const _wheelEls = {};
+
+function ensureWheelBase(){
+  if(_wheelBuilt) return;
   const svg = $("wheel");
   const cx = 110, cy = 110, r = 88;
   let html = "";
-
-  // defs: gradients + glow
   html += `<defs>
     <radialGradient id="whBg" cx="50%" cy="42%" r="58%">
       <stop offset="0%" stop-color="#2A3348"/>
@@ -1798,21 +2013,11 @@ function drawWheel(chance, angle){
       <feGaussianBlur stdDeviation="3.5" result="b"/>
       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
-    <filter id="whSoft" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="1.2"/>
-    </filter>
   </defs>`;
-
-  // outer dark plate
   html += `<circle cx="${cx}" cy="${cy}" r="${r+16}" fill="#0E1220"/>`;
-  // gold outer ring
   html += `<circle cx="${cx}" cy="${cy}" r="${r+12}" fill="none" stroke="url(#whRing)" stroke-width="5"/>`;
-  // inner shadow ring
   html += `<circle cx="${cx}" cy="${cy}" r="${r+7}" fill="none" stroke="#0A0C14" stroke-width="4"/>`;
-  // main disc
   html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#whBg)"/>`;
-
-  // tick marks around rim
   for(let i=0;i<36;i++){
     const a = (i * 10 - 90) * Math.PI / 180;
     const major = i % 3 === 0;
@@ -1824,52 +2029,56 @@ function drawWheel(chance, angle){
     const y2 = cy + r2 * Math.sin(a);
     html += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${major ? "#6A758F" : "#3A4458"}" stroke-width="${major ? 2 : 1}" stroke-linecap="round"/>`;
   }
-
-  function polar(a, rr){
-    const rad = a * Math.PI / 180;
-    return [cx + rr * Math.cos(rad), cy - rr * Math.sin(rad)];
-  }
-
-  // lose sector (full disc under win)
   html += `<circle cx="${cx}" cy="${cy}" r="${r-2}" fill="url(#whLose)"/>`;
-
-  // win sector
-  if(chance > 0){
-    const extent = Math.max(1.2, Math.min(359.5, 360 * chance));
-    const start = 90 - extent/2;
-    const [sx, sy] = polar(start, r-2);
-    const [ex, ey] = polar(start + extent, r-2);
-    const largeArc = extent > 180 ? 1 : 0;
-    html += `<path d="M ${cx} ${cy} L ${sx} ${sy} A ${r-2} ${r-2} 0 ${largeArc} 0 ${ex} ${ey} Z" fill="url(#whWin)" filter="url(#whGlow)"/>`;
-    // highlight arc on win edge
-    html += `<path d="M ${sx} ${sy} A ${r-2} ${r-2} 0 ${largeArc} 0 ${ex} ${ey}" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/>`;
-  }
-
-  // inner track ring
+  html += `<g id="whWinGroup"></g>`;
   html += `<circle cx="${cx}" cy="${cy}" r="${r-2}" fill="none" stroke="#2E3750" stroke-width="1.5"/>`;
   html += `<circle cx="${cx}" cy="${cy}" r="${r-14}" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="10"/>`;
-
-  // center hub
   html += `<circle cx="${cx}" cy="${cy}" r="28" fill="#12151F" stroke="#2E3750" stroke-width="2"/>`;
   html += `<circle cx="${cx}" cy="${cy}" r="22" fill="url(#whHub)"/>`;
   html += `<circle cx="${cx}" cy="${cy}" r="22" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>`;
   html += `<circle cx="${cx}" cy="${cy}" r="8" fill="#29200A"/>`;
   html += `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#FFE680"/>`;
+  html += `<text id="whPct" x="${cx}" y="${cy+42}" text-anchor="middle" fill="#8F9DB8" font-size="11" font-weight="700" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif"></text>`;
+  html += `<g id="whNeedle"></g>`;
+  html += `<polygon points="${cx-10},${cy-r-14} ${cx},${cy-r-1} ${cx+10},${cy-r-14}" fill="#FFCC33" stroke="#A07000" stroke-width="1"/>`;
+  html += `<circle cx="${cx}" cy="${cy-r-16}" r="3" fill="#FFE680"/>`;
+  svg.innerHTML = html;
+  _wheelEls.winGroup = svg.querySelector("#whWinGroup");
+  _wheelEls.pct = svg.querySelector("#whPct");
+  _wheelEls.needle = svg.querySelector("#whNeedle");
+  _wheelBuilt = true;
+}
 
-  // chance % in center
-  const pct = chance > 0 ? (chance * 100).toFixed(chance < 0.1 ? 1 : 0) : "—";
-  html += `<text x="${cx}" y="${cy+42}" text-anchor="middle" fill="#8F9DB8" font-size="11" font-weight="700" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif">${pct === "—" ? "" : pct + "%"}</text>`;
+function updateWheelSector(chance){
+  const cx = 110, cy = 110, r = 88;
+  const g = _wheelEls.winGroup;
+  if(!g) return;
+  if(chance <= 0){
+    g.innerHTML = "";
+    return;
+  }
+  function polar(a, rr){
+    const rad = a * Math.PI / 180;
+    return [cx + rr * Math.cos(rad), cy - rr * Math.sin(rad)];
+  }
+  const extent = Math.max(1.2, Math.min(359.5, 360 * chance));
+  const start = 90 - extent/2;
+  const [sx, sy] = polar(start, r-2);
+  const [ex, ey] = polar(start + extent, r-2);
+  const largeArc = extent > 180 ? 1 : 0;
+  g.innerHTML =
+    `<path d="M ${cx} ${cy} L ${sx} ${sy} A ${r-2} ${r-2} 0 ${largeArc} 0 ${ex} ${ey} Z" fill="url(#whWin)" filter="url(#whGlow)"/>` +
+    `<path d="M ${sx} ${sy} A ${r-2} ${r-2} 0 ${largeArc} 0 ${ex} ${ey}" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/>`;
+}
 
-  // pointer needle
+function updateWheelNeedle(angle){
+  const cx = 110, cy = 110, r = 88;
+  const g = _wheelEls.needle;
+  if(!g) return;
   const rad = angle * Math.PI / 180;
   const tipR = r - 10;
   const px = cx + tipR * Math.cos(rad);
   const py = cy - tipR * Math.sin(rad);
-  // needle shadow
-  html += `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="rgba(0,0,0,0.45)" stroke-width="5" stroke-linecap="round"/>`;
-  html += `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="#FFCC33" stroke-width="3.2" stroke-linecap="round"/>`;
-  html += `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="#FFE680" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>`;
-  // tip diamond
   const tipSize = 7;
   const tx = cx + (tipR + 2) * Math.cos(rad);
   const ty = cy - (tipR + 2) * Math.sin(rad);
@@ -1880,16 +2089,26 @@ function drawWheel(chance, angle){
   const t2y = ty + tipSize * Math.sin(perp);
   const t3x = cx + (tipR + 11) * Math.cos(rad);
   const t3y = cy - (tipR + 11) * Math.sin(rad);
-  html += `<polygon points="${t1x},${t1y} ${t3x},${t3y} ${t2x},${t2y}" fill="#FFCC33" stroke="#A07000" stroke-width="0.8"/>`;
-
-  // top fixed marker (triangle pointing down into wheel)
-  html += `<polygon points="${cx-10},${cy-r-14} ${cx},${cy-r-1} ${cx+10},${cy-r-14}" fill="#FFCC33" stroke="#A07000" stroke-width="1"/>`;
-  html += `<circle cx="${cx}" cy="${cy-r-16}" r="3" fill="#FFE680"/>`;
-
-  svg.innerHTML = html;
+  g.innerHTML =
+    `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="rgba(0,0,0,0.45)" stroke-width="5" stroke-linecap="round"/>` +
+    `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="#FFCC33" stroke-width="3.2" stroke-linecap="round"/>` +
+    `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="#FFE680" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>` +
+    `<polygon points="${t1x},${t1y} ${t3x},${t3y} ${t2x},${t2y}" fill="#FFCC33" stroke="#A07000" stroke-width="0.8"/>`;
 }
 
-function doUpgrade(){
+function drawWheel(chance, angle){
+  lastWheelAngle = angle;
+  ensureWheelBase();
+  if(chance !== _wheelLastChance){
+    updateWheelSector(chance);
+    const pct = chance > 0 ? (chance * 100).toFixed(chance < 0.1 ? 1 : 0) : "";
+    if(_wheelEls.pct) _wheelEls.pct.textContent = pct === "" ? "" : pct + "%";
+    _wheelLastChance = chance;
+  }
+  updateWheelNeedle(angle);
+}
+
+function doUpgrade(instant){
   if(upgSpinning || upgSelected === null) return;
   const idx = upgSelected;
   const it = state.inventory[idx];
@@ -1901,6 +2120,48 @@ function doUpgrade(){
   const success = Math.random() < chance;
 
   save();
+
+  if(instant){
+    upgSpinning = true;
+    $("upgBtn").disabled = true;
+    $("upgInstant").disabled = true;
+    $("wheel").classList.add("fx-spinning");
+
+    const extent = 360 * chance;
+    let finalAngle;
+    if(success){
+      const half = extent / 2;
+      const offset = (Math.random()*2 - 1) * half * 0.7;
+      finalAngle = (90 + offset + 7200) % 360;
+    }else{
+      if(extent >= 358){
+        finalAngle = (90 + 180 + 7200) % 360;
+      }else{
+        const avail = 360 - extent;
+        const startOff = extent/2 + 3;
+        finalAngle = (90 + startOff + Math.random()*(avail-6) + 7200) % 360;
+      }
+    }
+
+    // короткий рывок, чтобы стрелка заметно проехала
+    const startAngle = lastWheelAngle;
+    let totalRot = (finalAngle - startAngle + 360) % 360 + 360; // минимум 1 оборот
+    const duration = 380;
+    const t0 = performance.now();
+    function frame(t){
+      const p = Math.min(1, (t - t0)/duration);
+      const eased = 1 - Math.pow(1 - p, 2);
+      const cur = startAngle + totalRot * eased;
+      drawWheel(chance, cur);
+      if(p < 1) requestAnimationFrame(frame);
+      else{
+        $("wheel").classList.remove("fx-spinning");
+        finishUpgrade(idx, success, effectiveMult);
+      }
+    }
+    requestAnimationFrame(frame);
+    return;
+  }
 
   const extent = 360 * chance;
   let finalAngle;
@@ -1923,14 +2184,16 @@ function doUpgrade(){
 
   upgSpinning = true;
   $("upgBtn").disabled = true;
+  $("upgInstant").disabled = true;
+  $("wheel").classList.add("fx-spinning");
   setStatus("upgStatus","Крутим...","gold");
 
   let spinTick = 0;
   const tickInterval = setInterval(()=>{
-    beep(1000, 0.015, 0.05);
+    if(spinTick % 2 === 0) beep(1000, 0.015, 0.05);
     spinTick++;
-    if(spinTick > 30) clearInterval(tickInterval);
-  }, 60);
+    if(spinTick > 24) clearInterval(tickInterval);
+  }, 80);
 
   const duration = 2200;
   const t0 = performance.now();
@@ -1961,6 +2224,11 @@ function finishUpgrade(idx, success, mult){
     it.rarity = valueToRarity(nv);
     it.stars = (it.stars || 0) + 1;
     setStatus("upgStatus", `🎉 УСПЕХ! ${it.name} → ${fmt(nv)} ₽`,"green");
+    const us = $("upgStatus");
+    us.classList.remove("fx-success","fx-fail");
+    void us.offsetWidth;
+    us.classList.add("fx-success");
+    $("wheel").classList.remove("fx-spinning");
     sfx([[880,0.1],[1100,0.1],[1320,0.2]]);
   }else{
     const name = it.name;
@@ -1968,16 +2236,24 @@ function finishUpgrade(idx, success, mult){
     state.inventory.splice(idx, 1);
     upgSelected = null;
     setStatus("upgStatus", `💀 ПРОВАЛ! ${name} (${fmt(val)} ₽) потерян`,"red");
+    const us = $("upgStatus");
+    us.classList.remove("fx-success","fx-fail");
+    void us.offsetWidth;
+    us.classList.add("fx-fail");
+    $("wheel").classList.remove("fx-spinning");
     sfx([[320,0.15],[220,0.28]]);
   }
   save();
   refreshUpgInv();
   refreshCaseInv();
   upgSpinning = false;
-  $("upgBtn").disabled = (upgSelected === null);
+  const noSel = (upgSelected === null);
+  $("upgBtn").disabled = noSel;
+  $("upgInstant").disabled = noSel;
 }
 
-$("upgBtn").addEventListener("click", doUpgrade);
+$("upgBtn").addEventListener("click", ()=>doUpgrade(false));
+$("upgInstant").addEventListener("click", ()=>doUpgrade(true));
 
 $("sellSelected").addEventListener("click", ()=>{
   if(upgSelected === null) return;
@@ -2050,6 +2326,26 @@ $("devGive100k").addEventListener("click", ()=>devGive(100000));
 $("devGive1m").addEventListener("click", ()=>devGive(1000000));
 
 /* ==================== ИНИЦИАЛИЗАЦИЯ ==================== */
+function startGame(){
+  const menu = $("mainMenu");
+  if(!menu || menu.classList.contains("hiding")) return;
+  ensureAudio();
+  menu.classList.add("hiding");
+  document.body.classList.remove("menu-open");
+  // показать стартовый экран
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+  const firstTab = document.querySelector('.tab[data-screen="blackjack"]');
+  if(firstTab) firstTab.classList.add("active");
+  const firstScreen = $("screen-blackjack");
+  if(firstScreen) firstScreen.classList.add("active");
+  setTimeout(()=>{
+    menu.classList.add("gone");
+  }, 600);
+  beep(880, 0.08, 0.12);
+  setTimeout(()=>beep(1180, 0.1, 0.14), 90);
+}
+
 function init(){
   load();
   refreshBalance();
@@ -2066,6 +2362,8 @@ function init(){
   $("soundBtn").classList.toggle("off", !state.soundOn);
   bjUpdate();
   refreshPromoUI();
+  const playBtn = $("playBtn");
+  if(playBtn) playBtn.addEventListener("click", startGame);
 }
 
 document.addEventListener("DOMContentLoaded", init);
